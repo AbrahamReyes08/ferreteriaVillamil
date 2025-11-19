@@ -1,28 +1,28 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Usuario = sequelize.define('Usuario', {
-    id_usuario: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  const Articulo = sequelize.define('Articulo', {
+    id_articulo: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+    codigo: DataTypes.STRING,
     nombre: DataTypes.STRING,
-    correo: DataTypes.STRING,
-    clave: DataTypes.STRING,
-    telefono: DataTypes.STRING,
-    rol: DataTypes.ENUM('Administrador', 'Repartidor'),
-    estado: DataTypes.ENUM('Activo', 'Inactivo'),
-    fecha_creacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
+    descripcion: DataTypes.STRING,
+    costo_unitario: DataTypes.DECIMAL,
+    precio: DataTypes.DECIMAL,
+    cantidad_existencia: DataTypes.INTEGER,
+    stock_minimo: DataTypes.INTEGER,
+    proveedor: DataTypes.STRING,
+    estado: DataTypes.ENUM('Disponible', 'No Disponible'),
+    fecha_creacion: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+    fecha_actualizacion: DataTypes.DATE
   }, {
-    tableName: 'Usuario',
+    tableName: 'Articulo',
     timestamps: false
   });
 
-  Usuario.associate = models => {
-    Usuario.hasMany(models.Pedido, {
-      foreignKey: 'id_admin_creador'
-    });
-
-    Usuario.hasMany(models.Pedido, {
-      foreignKey: 'id_repartidor_asignado'
+  Articulo.associate = models => {
+    Articulo.hasMany(models.Detalle_Pedido, {
+      foreignKey: 'id_articulo'
     });
   };
 
-  return Usuario;
+  return Articulo;
 };

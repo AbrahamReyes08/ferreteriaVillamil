@@ -10,14 +10,18 @@ module.exports = {
         autoIncrement: true
       },
       nombre: Sequelize.STRING,
-      correo: Sequelize.STRING,
+      correo: {
+      type: Sequelize.STRING, 
+      unique: true},
+      
       clave: Sequelize.STRING,
       telefono: Sequelize.STRING,
       rol: {
-        type: 'rol_usuario'
+        type: 'rol_usuario',
       },
       estado: {
-        type: 'estado_usuario'
+        type: 'estado_usuario',
+        defaultValue: 'Activo'
       },
       fecha_creacion: {
         type: Sequelize.DATE,
