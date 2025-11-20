@@ -7,7 +7,7 @@
     "db:create": "sequelize-cli db:create",
     "db:migrate": "sequelize-cli db:migrate",
     "db:m:undo": "sequelize-cli db:migrate:undo:all",
-    "db:seed": "sequelize-cli db:seed:all",
+    "db:m:seed": "sequelize-cli db:seed:all",
     "db:s:undo": "sequelize-cli db:seed:undo:all"
   },
   "dependencies": {
