@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/articulos', articuloRouter);
-app.use('/api/usuarios', usuarioRouter);
+app.use('/api', usuarioRouter);
 app.use('/api/pedidos', pedidoRouter);
 
 
@@ -36,7 +36,18 @@ app.use(function (err, req, res, next) {
   
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  // If request expects JSON (API), return JSON; otherwise render view for browser.
+  if (req.accepts('json') || req.path.startsWith('/api')) {
+    return res.json({
+      error: {
+        message: err.message,
+        status: err.status || 500,
+        ...(req.app.get('env') === 'development' && { stack: err.stack })
+      }
+    });
+  }
+
+  res.render('error');
 });
 
 module.exports = app;
