@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "classux",
-    "password": "classux123",
+    "username": "postgres",
+    "password": "admin",
     "database": "ferreteria_development",
     "host": "localhost",
     "dialect": "postgres"
