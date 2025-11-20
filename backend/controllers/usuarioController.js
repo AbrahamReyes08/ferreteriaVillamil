@@ -13,7 +13,7 @@ module.exports = {
             if(await usuarioModel.findOne({ where: { correo } })){
                 return res.status(409).json({ message: 'El correo ya está registrado' });
             }
-            pw = await crypt.hash(clave, 10);
+            const pw = await crypt.hash(clave, 10);
             
             const newUsuario = await usuarioModel.create({
                 nombre,
@@ -21,7 +21,6 @@ module.exports = {
                 clave: pw,
                 telefono,
                 rol,
-                estado: 'Activo'
             });
 
             res.status(201).json({ message: 'Usuario creado exitosamente', usuario: newUsuario });
@@ -41,11 +40,11 @@ module.exports = {
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
             }
+            if (clave) {
+                usuario.clave = await crypt.hash(clave, 10) || usuario.clave;
+            }
             usuario.nombre = nombre || usuario.nombre;
             usuario.correo = correo || usuario.correo;
-            if (clave) {
-                usuario.clave = await crypt.hash(clave, 10);
-            }
             usuario.telefono = telefono || usuario.telefono;
             usuario.rol = rol || usuario.rol;
             usuario.estado = estado || usuario.estado;
