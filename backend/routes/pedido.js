@@ -1,0 +1,10 @@
+var router = require("express").Router();
+
+const userCtrl = require("../controllers/pedido.js");
+
+router.post("/newPedido", userCtrl.createNewPedido);
+router.get("/getAllPedidos", userCtrl.getAllPedidos);
+router.delete("/deletePedido/:id", userCtrl.deletePedido);
+router.put("/updatePedido/:id", userCtrl.updatePedido);
+
+module.exports = router;
