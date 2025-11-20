@@ -1,7 +1,6 @@
 const router = require('express').Router();
-const usuarioController = require('../controllers/usuarioController');
+const usuarioController = require('../controllers/usuario');
 
-// RESTful routes for usuarios
 router.get('/usuarios', usuarioController.getUsuario);
 router.get('/usuarios/:id', usuarioController.getUsuarioById);
 router.post('/usuarios', usuarioController.createUsuario);

@@ -3,9 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 var articuloRouter = require('./routes/articulo');
-
+var usuarioRouter = require('./routes/usuario');
+var pedidoRouter = require('./routes/pedido');
 var app = express();
 
 // view engine setup
@@ -19,10 +19,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/articulos', articuloRouter);
+app.use('/api/usuarios', usuarioRouter);
+app.use('/api/pedidos', pedidoRouter);
 
-// mount routers (after body parsers)
-var pedidoRouter = require("./routes/pedido");
-app.use("/pedido", pedidoRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
