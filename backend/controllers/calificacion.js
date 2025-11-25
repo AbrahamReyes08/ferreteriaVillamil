@@ -24,6 +24,28 @@ const getAllCalificaciones = async (request, response) => {
   }
 };
 
+const createNewCalificacion = async (request, response) => {
+  const { id_pedido, puntuacion, comentario } = request.body;
+  try {
+    const newCalificacion = await Calificacion.create({
+      id_pedido,
+      puntuacion,
+      comentario,
+    });
+    return response.status(201).json({
+      status: "success",
+      data: newCalificacion,
+    });
+  } catch (error) {
+    console.error("Error en createNewCalificacion:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Error al crear la calificación",
+    });
+  }
+};
+
 module.exports = {
   getAllCalificaciones,
+  createNewCalificacion,
 };
