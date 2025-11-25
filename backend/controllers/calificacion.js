@@ -71,8 +71,35 @@ const deleteCalificacion = async (request, response) => {
   }
 };
 
+const updateCalificacion = async (request, response) => {
+  const { id } = request.params;
+  const { puntuacion, comentario } = request.body;
+  try {
+    const calificacion = await Calificacion.findByPk(id);
+    if (!calificacion) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Calificación not found",
+      });
+    }
+    await calificacion.update({ puntuacion, comentario });
+    return response.status(200).json({
+      status: "success",
+      data: calificacion,
+    });
+  } catch (error) {
+    console.error("Error en updateCalificacion:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   getAllCalificaciones,
   createNewCalificacion,
   deleteCalificacion,
+  updateCalificacion,
 };
