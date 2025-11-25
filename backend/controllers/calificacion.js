@@ -1,4 +1,5 @@
 const { Calificacion } = require("../models");
+const { getAllItems } = require("./articulo");
 
 const getAllCalificaciones = async (request, response) => {
   try {
@@ -45,7 +46,33 @@ const createNewCalificacion = async (request, response) => {
   }
 };
 
+const deleteCalificacion = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const calificacion = await Calificacion.findByPk(id);
+    if (!calificacion) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Calificación not found",
+      });
+    }
+    await calificacion.destroy();
+    return response.status(200).json({
+      status: "success",
+      message: "Calificación deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error en deleteCalificacion:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   getAllCalificaciones,
   createNewCalificacion,
+  deleteCalificacion,
 };
