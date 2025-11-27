@@ -116,10 +116,88 @@ const getAllItems = async (request, response) => {
     }
 }
 
+const getAllActiveItems = async (request, response) => {
+    try {
+        const items = await Articulo.findAll({
+            where: {estado: "Disponible"}
+        });
+
+        return response.status(200).json({
+            status: "Success",
+            data: items
+        });
+    } catch (error) {
+        return response.status(500).json({
+            status:"Error",
+            message: error.message
+        })
+    }
+}
+
+const getItemByID = async (request, response) => {
+    try {
+        const data = request.params.codigo;
+
+        const item = await Articulo.findOne({
+            where: { codigo: data}
+        });
+        
+        if(!item){
+            return response.status(404).json({
+                status: "Not Found",
+                message: "Requested code does not exist"
+            });
+        }
+        return response.status(200).json({
+            status: "Success",
+            data: item
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            status:"Error",
+            message: error.message
+        })
+    }
+}
+
+const deleteItem = async (request, response) => {
+    try {
+        const data = request.params.codigo;
+
+        const item = await Articulo.findOne({
+            where: { codigo: data}
+        });
+
+        if(!item){
+            return response.status(404).json({
+                status: "Not Found",
+                message: "Requested code does not exist"
+            });
+        }
+
+        await item.destroy();
+
+        return response.status(200).json({
+            status: "Success",
+            message: "Item deleted successfully"
+        });
+
+    } catch (error) {
+        return response.status(500).json({
+            status:"Error",
+            message: error.message
+        })
+    }
+}
+
 module.exports = {
     nuevoArticulo,
     editArticulo,
     lowStockItems,
     getAllItems,
+    getItemByID,
+    deleteItem,
+    getAllActiveItems,
 
 }
