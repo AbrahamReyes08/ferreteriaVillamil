@@ -7,5 +7,6 @@ router.get("/getAllPedidos", userCtrl.getAllPedidos);
 router.delete("/deletePedido/:id", userCtrl.deletePedido);
 router.put("/updatePedido/:id", userCtrl.updatePedido);
 router.post("/:id/generar-codigo", userCtrl.mandarCodigoEntregado);
+router.post("/:id/:codigo/validar-codigo", userCtrl.validarCodigoEntregado);
 
 module.exports = router;

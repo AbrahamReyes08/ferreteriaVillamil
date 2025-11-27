@@ -143,10 +143,40 @@ const mandarCodigoEntregado = async (request, response) => {
   }
 };
 
+const validarCodigoEntregado = async (request, response) => {
+  const { id, codigo } = request.params;
+  try {
+    const pedido = await Pedido.findByPk(id);
+    if (!pedido) {
+      return response
+        .status(404)
+        .json({ status: "Not Found", message: "Pedido not found" });
+    }
+    if (pedido.codigo_confirmacion !== codigo) {
+      return response.status(400).json({
+        status: "Bad Request",
+        message: "Código de confirmación incorrecto",
+      });
+    }
+    await pedido.update({ estado: "Entregado" });
+    return response
+      .status(200)
+      .json({ status: "success", message: "Pedido marcado como entregado" });
+  } catch (error) {
+    console.error("Error en validarCodigoEntregado:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
   deletePedido,
   updatePedido,
   mandarCodigoEntregado,
+  validarCodigoEntregado,
 };
