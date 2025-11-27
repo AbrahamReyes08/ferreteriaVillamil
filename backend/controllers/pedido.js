@@ -105,9 +105,48 @@ const updatePedido = async (request, response) => {
   }
 };
 
+const generarCodigo = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+const mandarCodigoEntregado = async (request, response) => {
+  const { id } = request.params;
+
+  try {
+    const pedido = await Pedido.findByPk(id);
+
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+
+    const codigo = generarCodigo();
+
+    await pedido.update({
+      codigo_confirmacion: codigo,
+      estado: "En transcurso",
+    });
+
+    return response.status(200).json({
+      status: "success",
+      message: "Código generado correctamente",
+      codigo: codigo,
+    });
+  } catch (error) {
+    console.error("Error en mandarCodigoEntregado:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
   deletePedido,
   updatePedido,
+  mandarCodigoEntregado,
 };
