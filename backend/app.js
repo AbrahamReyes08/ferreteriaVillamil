@@ -7,6 +7,7 @@ var articuloRouter = require("./routes/articulo");
 var usuarioRouter = require("./routes/usuario");
 var pedidoRouter = require("./routes/pedido");
 var calificacionRouter = require("./routes/calificacion");
+var estadisticasRouter = require("./routes/estadisticas");
 var app = express();
 
 // view engine setup
@@ -20,9 +21,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/articulos", articuloRouter);
-app.use("/api", usuarioRouter);
+app.use("/api/usuarios", usuarioRouter);
 app.use("/api/pedidos", pedidoRouter);
 app.use("/api/calificaciones", calificacionRouter);
+app.use("/api/estadisticas", estadisticasRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
