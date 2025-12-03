@@ -271,7 +271,7 @@ module.exports = {
         motivo_cancelacion: null,
         link_seguimiento: null
       },
-      // Pedidos en otros estados
+      // Pedidos en otros estados - Demostrando múltiples pedidos activos por repartidor
       {
         numero_pedido: 'PED013',
         cliente_nombre: 'Miguel Ángel',
@@ -292,12 +292,13 @@ module.exports = {
         motivo_cancelacion: null,
         link_seguimiento: null
       },
+      // Juan Pérez (ID 5) tiene múltiples pedidos asignados
       {
         numero_pedido: 'PED014',
         cliente_nombre: 'Elena Ruiz',
         cliente_telefono: '88880014',
         cliente_identidad: '0801-1991-22222',
-        id_repartidor_asignado: 5, // Juan Pérez
+        id_repartidor_asignado: 5, // Juan Pérez - Primer pedido activo
         id_admin_creador: 2,
         estado: 'Asignado',
         codigo_confirmacion: null,
@@ -312,12 +313,13 @@ module.exports = {
         motivo_cancelacion: null,
         link_seguimiento: null
       },
+      // Ana Rodríguez (ID 6) tiene múltiples pedidos asignados
       {
         numero_pedido: 'PED015',
         cliente_nombre: 'Ricardo Mejía',
         cliente_telefono: '88880015',
         cliente_identidad: '0801-1992-33333',
-        id_repartidor_asignado: 6, // Ana Rodríguez
+        id_repartidor_asignado: 6, // Ana Rodríguez - Primer pedido activo
         id_admin_creador: 1,
         estado: 'En transcurso',
         codigo_confirmacion: '345678',
@@ -332,12 +334,13 @@ module.exports = {
         motivo_cancelacion: null,
         link_seguimiento: null
       },
+      // María González (ID 4) tiene múltiples pedidos asignados
       {
         numero_pedido: 'PED016',
         cliente_nombre: 'Gabriela Fuentes',
         cliente_telefono: '88880016',
         cliente_identidad: '0801-1993-44444',
-        id_repartidor_asignado: 4, // María González
+        id_repartidor_asignado: 4, // María González - Pedido cancelado
         id_admin_creador: 2,
         estado: 'Cancelado',
         codigo_confirmacion: null,
@@ -350,6 +353,48 @@ module.exports = {
         fecha_entrega: null,
         fecha_cancelacion: new Date('2024-12-08T10:00:00'),
         motivo_cancelacion: 'Cliente canceló el pedido',
+        link_seguimiento: null
+      },
+      // Juan Pérez (ID 5) - Segundo pedido activo (demostrando múltiples pedidos)
+      {
+        numero_pedido: 'PED017',
+        cliente_nombre: 'Carlos Herrera',
+        cliente_telefono: '88880017',
+        cliente_identidad: '0801-1988-55555',
+        id_repartidor_asignado: 5, // Juan Pérez - Segundo pedido activo
+        id_admin_creador: 1,
+        estado: 'Asignado',
+        codigo_confirmacion: null,
+        costo_envio: 35,
+        total: 195,
+        direccion_entrega: 'Col. Boulevard, Tegucigalpa',
+        observacion: 'Cliente solicita entrega urgente',
+        fecha_creacion: new Date('2024-12-16T09:00:00'),
+        fecha_asignacion: new Date('2024-12-16T09:30:00'),
+        fecha_entrega: null,
+        fecha_cancelacion: null,
+        motivo_cancelacion: null,
+        link_seguimiento: null
+      },
+      // Ana Rodríguez (ID 6) - Segundo pedido activo (demostrando múltiples pedidos)
+      {
+        numero_pedido: 'PED018',
+        cliente_nombre: 'Sandra Morales',
+        cliente_telefono: '88880018',
+        cliente_identidad: '0801-1995-66666',
+        id_repartidor_asignado: 6, // Ana Rodríguez - Segundo pedido activo
+        id_admin_creador: 2,
+        estado: 'Asignado',
+        codigo_confirmacion: null,
+        costo_envio: 40,
+        total: 260,
+        direccion_entrega: 'Col. Kennedy, Tegucigalpa',
+        observacion: null,
+        fecha_creacion: new Date('2024-12-16T10:00:00'),
+        fecha_asignacion: new Date('2024-12-16T10:30:00'),
+        fecha_entrega: null,
+        fecha_cancelacion: null,
+        motivo_cancelacion: null,
         link_seguimiento: null
       }
     ], {});
