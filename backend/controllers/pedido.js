@@ -1,4 +1,4 @@
-const { Pedido, Usuarios } = require("../models");
+const { Pedido, Usuario } = require("../models");
 
 const createNewPedido = async (request, response) => {
   try {
@@ -172,6 +172,53 @@ const validarCodigoEntregado = async (request, response) => {
   }
 };
 
+const getPedidosByRepartidor = async (request, response) => {
+  const { id_repartidor } = request.params;
+  try {
+    const pedidos = await Pedido.findAll({
+      where: { id_repartidor_asignado: id_repartidor }
+    });
+
+    return response.status(200).json({
+      status: "success",
+      data: pedidos,
+      count: pedidos.length
+    });
+  } catch (error) {
+    console.error("Error en getPedidosByRepartidor:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
+const getPedidosActivosByRepartidor = async (request, response) => {
+  const { id_repartidor } = request.params;
+  try {
+    const pedidos = await Pedido.findAll({
+      where: { 
+        id_repartidor_asignado: id_repartidor,
+        estado: ['Asignado', 'En transcurso']
+      }
+    });
+
+    return response.status(200).json({
+      status: "success",
+      data: pedidos,
+      count: pedidos.length
+    });
+  } catch (error) {
+    console.error("Error en getPedidosActivosByRepartidor:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
@@ -179,4 +226,6 @@ module.exports = {
   updatePedido,
   mandarCodigoEntregado,
   validarCodigoEntregado,
+  getPedidosByRepartidor,
+  getPedidosActivosByRepartidor,
 };
