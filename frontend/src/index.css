@@ -13,13 +13,8 @@ body {
   background: linear-gradient(135deg, #ecedf1 0%, #764ba2 100%);
   min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
 }
 
 #root {
   width: 100%;
-  max-width: 450px;
 }
-

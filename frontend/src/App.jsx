@@ -1,14 +1,20 @@
-import { Card } from 'antd';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/Home.jsx";
+import AdminLayout from "./components/AdminLayout.jsx";
 
 function App() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-64 h-64 flex items-center justify-center shadow-xl bg-gradient-to-br from-blue-500 to-purple-600">
-        <p className="text-white text-2xl font-bold text-center">
-          Tailwind y Ant funcionan
-        </p>
-      </Card>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* Página sin sidebar */}
+        <Route path="/" element={<Home />} />
+
+        {/* Páginas que llevan sidebar del admin*/}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
