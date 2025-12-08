@@ -1,9 +1,9 @@
 import React from "react";
-import { FaHome, FaWarehouse, FaUsers, FaBox, FaTruck, FaUser} from "react-icons/fa";
+import { FaHome, FaUser, FaHistory  } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/LogoFerreteriaVillamil.png";
 
-export function SidebarAdmin() {
+export function SidebarRepartidor() {
   const location = useLocation();
 
   const isActive = (path) => location.pathname === path;
@@ -35,52 +35,30 @@ export function SidebarAdmin() {
         </Link>
 
         <Link 
-          to="/inventario" 
+          to="/historial" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/inventario') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive('/historial') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
         >
-          <FaWarehouse className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/inventario') && 'underline'}`}>
-            Inventario
+          <FaHistory className="w-6 h-6" />
+          <span className={`text-lg font-semibold ${!isActive('/historial') && 'underline'}`}>
+            Historial
           </span>
         </Link>
 
         <Link 
-          to="/usuarios" 
+          to="/perfil" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/usuarios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive('/perfil') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
         >
-          <FaUsers className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/usuarios') && 'underline'}`}>
-            Usuarios
+          <FaUser className="w-6 h-6" />
+          <span className={`text-lg font-semibold ${!isActive('/perfil') && 'underline'}`}>
+            Perfil
           </span>
         </Link>
 
-        <Link 
-          to="/pedidos" 
-          className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/pedidos') ? 'text-[#BC7D3B]' : 'text-[#163269]'
-          }`}
-        >
-          <FaBox className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/pedidos') && 'underline'}`}>
-            Pedidos
-          </span>
-        </Link>
-
-        <Link 
-          to="/envios" 
-          className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/envios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
-          }`}
-        >
-          <FaTruck className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/envios') && 'underline'}`}>
-            Envíos
-          </span>
-        </Link>
+        
       </nav>
 
       {/*User Profile*/}
