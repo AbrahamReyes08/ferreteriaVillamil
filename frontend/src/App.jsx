@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home.jsx";
 import AdminLayout from "./components/AdminLayout.jsx";
+import RepartidorLayout from "./components/RepartidorLayout.jsx";
 
 function App() {
   return (
@@ -12,6 +13,11 @@ function App() {
         {/* Páginas que llevan sidebar del admin*/}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
+        </Route>
+
+        {/* Páginas que llevan sidebar del repartidor*/}
+        <Route path="/repartidor" element={<RepartidorLayout />}>
+          <Route index element={<h1 className="text-3xl">Panel Repartidor</h1>} />
         </Route>
       </Routes>
     </BrowserRouter>
