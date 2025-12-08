@@ -1,23 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router'
 import './index.css'
 import App from './App.jsx'
 
-//Insertar el resto de componentes aqui
-const router = createBrowserRouter([
-  {
-    path: "/", element: <App />
-  }
-]);
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App router = {router}/>
+    <App />
   </StrictMode>,
 )
 
-//NO TOCAR EL CODIGO DE ABAJO
+// NO TOCAR EL CÓDIGO DE ABAJO
 
 // Registrar el Service Worker para hacer la app instalable como PWA
 if ('serviceWorker' in navigator) {
@@ -35,13 +27,8 @@ if ('serviceWorker' in navigator) {
 // Detectar cuando el usuario puede instalar la PWA
 window.addEventListener('beforeinstallprompt', (e) => {
   console.log('PWA lista para instalar');
-
 });
 
 window.addEventListener('appinstalled', () => {
   console.log('PWA instalada correctamente');
 });
-
-
-
-
