@@ -1,5 +1,6 @@
 const { Usuario, Pedido } = require("../models");
 const crypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 module.exports = {
   //Create
   createUsuario: async (req, res) => {
@@ -119,6 +120,59 @@ module.exports = {
       res
         .status(500)
         .json({ error, message: "Error interno eliminando usuario" });
+    }
+  },
+
+  //Login con JWT
+  loginUsuario: async (req, res) => {
+    try {
+      const { usuario, contrasena } = req.body;
+      
+      if (!usuario || !contrasena) {
+        return res.status(400).json({ message: "Usuario y contraseña son obligatorios" });
+      }
+
+      const user = await Usuario.findOne({ where: { nombre: usuario } });
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+
+      if (user.estado !== 'Activo') {
+        return res.status(403).json({ message: "Usuario inactivo" });
+      }
+
+      const contrasenaValida = await crypt.compare(contrasena, user.clave);
+      if (!contrasenaValida) {
+        return res.status(401).json({ message: "Contraseña incorrecta" });
+      }
+
+      const token = jwt.sign(
+        { 
+          id: user.id_usuario,
+          usuario: user.nombre,
+          rol: user.rol,
+          nombre: user.nombre
+        },
+        process.env.JWT_SECRET || 'ferreteria_villamil_secret_key_2024',
+        { expiresIn: '2h' }
+      );
+
+      const usuarioSinClave = {
+        id_usuario: user.id_usuario,
+        nombre: user.nombre,
+        correo: user.correo,
+        telefono: user.telefono,
+        rol: user.rol,
+        estado: user.estado
+      };
+
+      res.status(200).json({
+        message: "Login exitoso",
+        token,
+        usuario: usuarioSinClave
+      });
+    } catch (error) {
+      res.status(500).json({ error, message: "Error interno en inicio de sesión" });
     }
   },
 
