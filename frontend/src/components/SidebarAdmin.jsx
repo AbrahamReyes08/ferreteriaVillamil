@@ -1,10 +1,35 @@
-import React from "react";
-import { FaHome, FaWarehouse, FaUsers, FaBox, FaTruck, FaUser} from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { FaHome, FaWarehouse, FaUsers, FaBox, FaTruck, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import logo from "../assets/LogoFerreteriaVillamil.png";
+
+// Configurar axios para enviar token en todas las peticiones
+axios.interceptors.request.use(config => {
+  const token = sessionStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export function SidebarAdmin() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const usuarioData = sessionStorage.getItem('usuario');
+    if (usuarioData) {
+      setUserData(JSON.parse(usuarioData));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('usuario');
+    navigate('/');
+  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -85,14 +110,23 @@ export function SidebarAdmin() {
 
       {/*User Profile*/}
       <div className="p-6 bg-[#E6E6E6] border-t border-[#B8B8B8]">
-        <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">
-            <FaUser className="w-8 h-8 text-white" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">
+              <FaUser className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <div className="font-semibold text-black">Bienvenido</div>
+              <div className="text-[#163269]">{userData?.nombre || 'Usuario'}</div>
+            </div>
           </div>
-          <div>
-            <div className="font-semibold text-black">Bienvenido</div>
-            <div className="text-[#163269]">Josue</div>
-          </div>
+          <button
+            onClick={handleLogout}
+            className="p-2 hover:bg-red-100 rounded-full transition-colors group"
+            title="Cerrar sesión"
+          >
+            <FaSignOutAlt className="w-5 h-5 text-red-600 group-hover:text-red-700" />
+          </button>
         </div>
       </div>
     </div>

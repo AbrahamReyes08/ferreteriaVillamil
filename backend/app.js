@@ -3,11 +3,14 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+var cors = require("cors");
 var articuloRouter = require("./routes/articulo");
 var usuarioRouter = require("./routes/usuario");
 var pedidoRouter = require("./routes/pedido");
 var calificacionRouter = require("./routes/calificacion");
 var estadisticasRouter = require("./routes/estadisticas");
+var usuarioController = require("./controllers/usuario");
+var authMiddleware = require("./middleware/auth");
 var app = express();
 
 // view engine setup
@@ -15,16 +18,23 @@ app.set("views", path.join(__dirname, "..", "views"));
 app.set("view engine", "jade");
 
 app.use(logger("dev"));
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/articulos", articuloRouter);
-app.use("/api/usuarios", usuarioRouter);
-app.use("/api/pedidos", pedidoRouter);
-app.use("/api/calificaciones", calificacionRouter);
-app.use("/api/estadisticas", estadisticasRouter);
+app.use("/api/articulos", authMiddleware, articuloRouter);
+app.use("/api/usuarios", authMiddleware, usuarioRouter);
+app.use("/api/pedidos", authMiddleware, pedidoRouter);
+app.use("/api/calificaciones", authMiddleware, calificacionRouter);
+app.use("/api/estadisticas", authMiddleware, estadisticasRouter);
+
+// Login endpoint (no necesita autenticación)
+app.post("/api/login", usuarioController.loginUsuario);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
