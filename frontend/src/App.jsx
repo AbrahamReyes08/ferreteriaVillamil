@@ -4,6 +4,7 @@ import RepartidorLayout from "./components/RepartidorLayout.jsx";
 import LoginForm from "./components/LoginForm.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CrearUsuario from "./components/CrearUsuario.jsx";
+import UserListAdmin from "./components/UserListAdmin.jsx";
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
-          <Route path="crear-usuario" element={<CrearUsuario />} />
+          <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
+          <Route path="usuarios" element={<UserListAdmin />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}

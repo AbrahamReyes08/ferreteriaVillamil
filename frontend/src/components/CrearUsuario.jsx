@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import { Input, Select, Avatar, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+    
 const { Option } = Select;
 
 function CrearUsuario() {
+  const navigate = useNavigate();
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
   const [telefono, setTelefono] = useState('');
   const [clave, setclave] = useState('');
   const [rol, setRol] = useState('Repartidor');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
-    setError('');
     setLoading(true);
     
     try {
@@ -31,15 +31,16 @@ function CrearUsuario() {
       message.success('Usuario registrado exitosamente');
       
       setNombre('');
-      setCorreo('');
+      setCorreo('');    
       setTelefono('');
       setclave('');
       setRol('Repartidor');
+
+      navigate('/admin/usuarios');
+
       
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Error al registrar usuario';
-      setError(errorMsg);
-      message.error(errorMsg);
+      message.error('Error al registrar usuario');
     } finally {
       setLoading(false);
     }
@@ -52,12 +53,6 @@ function CrearUsuario() {
         <h1 className="text-3xl font-bold mb-5 pb-4 border-b-4" style={{ color: '#163269', borderColor: '#163269' }}>
           Registrar Usuario
         </h1>
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
-            {error}
-          </div>
-        )}
 
         <div className="flex gap-10 mt-10">
           {/* PP */}
