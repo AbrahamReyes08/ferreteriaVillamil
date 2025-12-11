@@ -60,13 +60,13 @@ export function SidebarRepartidor() {
         </Link>
 
         <Link 
-          to="/historial" 
+          to="/repartidor/pedidos" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/historial') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive('/repartidor/pedidos') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
         >
           <FaHistory className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/historial') && 'underline'}`}>
+          <span className={`text-lg font-semibold ${!isActive('/repartidor/pedidos')}`}>
             Historial
           </span>
         </Link>
