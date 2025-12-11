@@ -74,7 +74,7 @@ export function SidebarAdmin() {
         <Link 
           to="/admin/usuarios" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/usuarios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive('/admin/usuarios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
         >
           <FaUsers className="w-6 h-6" />
