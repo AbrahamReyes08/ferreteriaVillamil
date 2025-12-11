@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CrearUsuario from "./components/CrearUsuario.jsx";
 import UserListAdmin from "./components/UserListAdmin.jsx";
+import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<h1 className="text-3xl">Panel Repartidor</h1>} />
+          <Route path="pedidos" element={<ListaPedidosRepartidor />} />
         </Route>
       </Routes>
     </BrowserRouter>
