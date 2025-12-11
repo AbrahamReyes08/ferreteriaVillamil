@@ -8,6 +8,7 @@ import UserListAdmin from "./components/UserListAdmin.jsx";
 import PedidoCardRepartidor from "./components/PedidoCardRepartidor.jsx";
 import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
 import NuevoArticuloForm from "./components/ItemForm.jsx";
+import InventarioList from "./components/InventarioList.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
           <Route path="inventario/crear-articulo" element={<NuevoArticuloForm />} />
+          <Route path="inventario" element={<InventarioList />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}
