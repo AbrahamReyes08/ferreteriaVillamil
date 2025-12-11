@@ -219,9 +219,36 @@ const getPedidosActivosByRepartidor = async (request, response) => {
   }
 };
 
+const getPedidoById = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const pedido = await Pedido.findByPk(id);
+
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+
+    return response.status(200).json({
+      status: "success",
+      data: pedido,
+    });
+  } catch (error) {
+    console.error("Error en getPedidoById:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  };
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
+  getPedidoById,
   deletePedido,
   updatePedido,
   mandarCodigoEntregado,
