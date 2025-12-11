@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Avatar, message } from 'antd';
 import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function InventarioList() {
     const [articulos, setArticulos] = useState([]);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
     
     const fetchArticulos = async () => {
         try {
@@ -19,6 +20,10 @@ function InventarioList() {
             setError(errorMsg);
             message.error(errorMsg);
         }
+    }
+
+    const handleNuevoArticulo = async () => {
+        navigate('/admin/inventario/crear-articulo')
     }
 
     useEffect(() => {
@@ -36,7 +41,8 @@ function InventarioList() {
 
             {/* New Article Button */}
             <div className="flex justify-end mb-6">
-                <button className="px-6 py-3 bg-white border-2 border-black rounded-lg shadow-md hover:bg-gray-50 transition-colors font-medium text-lg">
+                <button className="px-6 py-3 bg-white border-2 border-black rounded-lg shadow-md hover:bg-gray-50 transition-colors font-medium text-lg"
+                onClick = {handleNuevoArticulo}>
                     Nuevo artículo
                 </button>
                 </div>

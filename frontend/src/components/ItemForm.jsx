@@ -17,6 +17,7 @@ function NuevoArticuloForm() {
         estado: "Disponible",
     })
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleChange = (event) => {
         setForm({...form, [event.target.name]: event.target.value})
@@ -48,11 +49,17 @@ function NuevoArticuloForm() {
                 stock_minimo: "",
                 proveedor: "",
             })
+            setLoading(false);
+            navigate('/admin/inventario');
         } catch (err) {
-            message.error('Error al crear artículo');
+            message.error('Error al crear artículo. Llene todos los campos');
         } finally {
             setLoading(false);
         }
+    }
+
+    const handleCancelar = () => {
+        navigate('/admin/inventario');
     }
 
     return (
@@ -250,6 +257,8 @@ function NuevoArticuloForm() {
                 {/* Botones */}
                 <div className="flex justify-end gap-4 mt-6">
                     <button className="font-medium py-3 px-4 bg-gray-200 border border-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                        onClick={handleCancelar}
+                        disable = {!loading}
                         style={{ 
                             color: 'gray-500',
                         }}>Cancelar
@@ -260,7 +269,7 @@ function NuevoArticuloForm() {
                         style={{ 
                             backgroundColor: '#163269',
                             color: 'white'
-                        }}>Guardar
+                        }}>{loading ? "Agregando..." : "Agregar"}
                     </button>
                 </div>
             </div>
