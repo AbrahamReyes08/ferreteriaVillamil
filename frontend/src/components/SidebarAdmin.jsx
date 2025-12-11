@@ -66,7 +66,7 @@ export function SidebarAdmin() {
           }`}
         >
           <FaWarehouse className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('admin/inventario') && 'underline'}`}>
+          <span className={`text-lg font-semibold ${!isActive('/admin/inventario') && 'underline'}`}>
             Inventario
           </span>
         </Link>
