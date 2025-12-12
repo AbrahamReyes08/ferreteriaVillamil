@@ -58,8 +58,9 @@ function ListaPedidosRepartidor() {
 
       const baseUrl =
         import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+      console.log(baseUrl);
       const response = await axios.get(
-        `${baseUrl}/api/pedidos/repartidor/${repartidorId}/pedidos`
+        `${baseUrl}/pedidos/repartidor/${repartidorId}/pedidos`
       );
 
       const pedidosData = response.data.data || response.data;
