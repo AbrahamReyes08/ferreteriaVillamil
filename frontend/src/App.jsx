@@ -30,7 +30,7 @@ function App() {
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
-          <Route path="pedidos" element={<NuevoPedidoForm />} />
+          <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}
