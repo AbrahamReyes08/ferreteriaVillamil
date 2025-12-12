@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, message } from "antd";
+import { Cascader, message } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +9,36 @@ function ListaPedidosRepartidor() {
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filterValue, setFilterValue] = useState(null);
+
+  const options = [
+    {
+      value: "Estado",
+      label: "Estado de Pedido",
+      children: [
+        {
+          value: "Entregado",
+          label: "Entregado",
+        },
+        {
+          value: "En Transcurso",
+          label: "En Transcurso",
+        },
+        {
+          value: "Pendiente",
+          label: "Pendiente",
+        },
+        {
+          value: "Cancelado",
+          label: "Cancelado",
+        },
+        {
+          value: "Asignado",
+          label: "Asignado",
+        },
+      ],
+    },
+  ];
 
   //cargar pedidos a la hora de entrar
   useEffect(() => {
@@ -25,10 +56,10 @@ function ListaPedidosRepartidor() {
       const usuario = JSON.parse(usuarioStorage);
       const repartidorId = usuario.id_usuario;
 
-      const URL_API = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
+      const baseUrl =
+        import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
       const response = await axios.get(
-        `${URL_API}/api/pedidos/repartidor/${repartidorId}/pedidos`
+        `${baseUrl}/api/pedidos/repartidor/${repartidorId}/pedidos`
       );
 
       const pedidosData = response.data.data || response.data;
@@ -55,6 +86,10 @@ function ListaPedidosRepartidor() {
     return "#163269";
   };
 
+  const onChange = (value) => {
+    setFilterValue(value && value.length ? value[value.length - 1] : null);
+  };
+
   return (
     <div className="w-full">
       <div className="max-w-5xl">
@@ -73,7 +108,29 @@ function ListaPedidosRepartidor() {
             className="text-xl font-bold pb-4 "
             style={{ color: "#163269" }}
           >
-            Total de pedidos: {pedidos.length}
+            Total de pedidos:{" "}
+            {
+              (filterValue
+                ? pedidos.filter((p) => p.estado === filterValue)
+                : pedidos
+              ).length
+            }
+          </span>
+        </div>
+        <div className="flex items-center justify-end mb-1 gap-1">
+          <span
+            className="text-xl pb-4 flex items-center gap-2 cursor-pointer"
+            style={{ color: "#163269" }}
+          >
+            <Cascader
+              options={options}
+              onChange={onChange}
+              placeholder={
+                <span className="flex items-center gap-2">
+                  <FilterOutlined /> Filtrar
+                </span>
+              }
+            />
           </span>
         </div>
 
@@ -97,7 +154,10 @@ function ListaPedidosRepartidor() {
           </div>
         ) : (
           <div className="space-y-6">
-            {pedidos.map((pedido) => (
+            {(filterValue
+              ? pedidos.filter((p) => p.estado === filterValue)
+              : pedidos
+            ).map((pedido) => (
               <div
                 key={pedido.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
