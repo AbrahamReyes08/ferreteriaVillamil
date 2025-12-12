@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Cascader, message } from "antd";
+import { message, Cascader } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function ListaPedidosRepartidor() {
+function ListaPedidosAdmin() {
   const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ function ListaPedidosRepartidor() {
     },
   ];
 
-  //cargar pedidos a la hora de entrar
+  // Cargar pedidos al montar el componente
   useEffect(() => {
     fetchPedidos();
   }, []);
@@ -56,11 +56,8 @@ function ListaPedidosRepartidor() {
       const usuario = JSON.parse(usuarioStorage);
       const repartidorId = usuario.id_usuario;
 
-      const baseUrl =
-        import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
-      console.log(baseUrl);
       const response = await axios.get(
-        `${baseUrl}/pedidos/repartidor/${repartidorId}/pedidos`
+        `http://localhost:3000/api/pedidos/getAllPedidos`
       );
 
       const pedidosData = response.data.data || response.data;
@@ -75,15 +72,10 @@ function ListaPedidosRepartidor() {
   };
 
   const handleEstadoColor = (estado) => {
-    if (estado === "Entregado") {
-      return "#5E9C08";
-    } else if (estado === "Cancelado") {
-      return "#BC7D3B";
-    } else if (estado === "En Transcurso") {
-      return "#2C4D8E";
-    } else if (estado === "Pendiente") {
-      return "#ECB01F";
-    }
+    if (estado === "Entregado") return "#5E9C08";
+    if (estado === "Cancelado") return "#BC7D3B";
+    if (estado === "En Transcurso") return "#2C4D8E";
+    if (estado === "Pendiente") return "#ECB01F";
     return "#163269";
   };
 
@@ -96,7 +88,7 @@ function ListaPedidosRepartidor() {
       <div className="max-w-5xl">
         {/* Header (page) */}
         <div
-          className="flex items-center justify-between mb-5 border-b-4"
+          className="flex items-center justify-between mb-5 border-b-4 gap-4"
           style={{ borderColor: "#163269" }}
         >
           <h1
@@ -105,10 +97,8 @@ function ListaPedidosRepartidor() {
           >
             Lista de Pedidos
           </h1>
-          <span
-            className="text-xl font-bold pb-4 "
-            style={{ color: "#163269" }}
-          >
+
+          <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
             Total de pedidos:{" "}
             {
               (filterValue
@@ -150,7 +140,7 @@ function ListaPedidosRepartidor() {
         ) : pedidos.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg" style={{ color: "#163269" }}>
-              No hay pedidos asignados
+              No hay pedidos existentes
             </p>
           </div>
         ) : (
@@ -181,6 +171,7 @@ function ListaPedidosRepartidor() {
                       )}
                     </p>
                   </div>
+
                   <span
                     className="px-6 py-1 rounded-full text-white font-medium shadow-lg self-start"
                     style={{
@@ -199,4 +190,4 @@ function ListaPedidosRepartidor() {
   );
 }
 
-export default ListaPedidosRepartidor;
+export default ListaPedidosAdmin;
