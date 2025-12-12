@@ -25,7 +25,7 @@ function App() {
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
-          <Route path="pedidos" element={<NuevoPedidoForm />} />
+          <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}

@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, message } from 'antd';
-import { UserOutlined, MailOutlined, EditOutlined, UserDeleteOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Avatar, message, Modal } from 'antd';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function NuevoPedidoForm() {
+    const usuario = JSON.parse(sessionStorage.getItem('usuario'));
+    const id_admin_creador = usuario?.id_usuario;
+    const navigate = useNavigate();
     const [form, setForm] = useState({
-        id_pedido: "",
         numero_pedido: "",
         cliente_nombre: "",
         cliente_telefono: "",
         cliente_identidad: "",
-        id_admin_creador: "",
-        estado: 'Asignado',
-        codigo_confirmacion: "",
-        costo_envio: "",
-        total: "",
+        id_admin_creador: id_admin_creador,
+        estado: 'Pendiente',
+        costo_envio: 0.0,
+        total: 0.0,
         direccion_entrega: "",
         observacion: "",
     })
@@ -48,17 +48,16 @@ function NuevoPedidoForm() {
 
     const handleChange = (event) => {
         setForm({...form, [event.target.name]: event.target.value})
-        console.log(form)
+        console.log(form);
     }
 
     const handleIdentidad = (event) => {
-        const value = event.target.value.replace(/\D/g, ""); 
-            if (v.length > 4 && v.length <= 8) {
-                v = v.slice(0, 4) + "-" + v.slice(4);
-            } else if (v.length > 8) {
-                v = v.slice(0, 4) + "-" + v.slice(4, 8) + "-" + v.slice(8, 13);
+        let value = event.target.value.replace(/\D/g, ""); 
+            if (value.length > 4 && value.length <= 8) {
+                value = value.slice(0, 4) + "-" + value.slice(4);
+            } else if (value.length > 8) {
+                value = value.slice(0, 4) + "-" + value.slice(4, 8) + "-" + value.slice(8, 13);
             }
-
         handleChange({
             target: { name: event.target.name, value}
         });
@@ -68,33 +67,55 @@ function NuevoPedidoForm() {
         setLoading(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/articulos/new`, form);
-            console.log(response.data);
-            message.success('Artículo creado exitosamente');
-            
+
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/newPedido`, form);
+            message.success('Pedido creado exitosamente');
             setForm({
-                codigo: "", 
-                nombre: "", 
-                descripcion: "", 
-                costo_unitario: "",
-                precio: "",
-                cantidad_existencia: "",
-                stock_minimo: "",
-                proveedor: "",
-            })
+                numero_pedido: "",
+                cliente_nombre: "",
+                cliente_telefono: "",
+                cliente_identidad: "",
+                id_admin_creador: id_admin_creador,
+                estado: 'Pendiente',
+                costo_envio: 0.0,
+                total: 0.0,
+                direccion_entrega: "",
+                observacion: "",
+            });
+            
+            const id_pedido= response.data.data.id_pedido
+            const detallesConPedido = detalles.map(({ nombre, ...det }) => ({
+                ...det,
+                id_pedido
+            }));
+
+            console.log(detallesConPedido)
+
+            await Promise.all(
+                detallesConPedido.map(detalle =>
+                    axios.post(
+                        `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/detalles/new`,
+                        detalle
+                    )
+                )
+            );
+            navigate('/admin/pedidos');
         } catch (err) {
-            message.error('Error al crear artículo');
+            message.error(`Error al crear pedido`);
+            console.log(err)
         } finally {
             setLoading(false);
         }
     }
 
+    const handleCancel = () => {
+        navigate("/admin/pedidos")
+    }
+
     const agregarArticulo = () => {
         if (!selectedArticulo) return;
-        console.log(selectedArticulo);
 
         const art = articulos.find(a => String(a.id_articulo) === selectedArticulo);
-        console.log(art);
         if (!art) return;
 
         const existe = detalles.find(d => d.id_articulo === art.id_articulo);
@@ -107,17 +128,35 @@ function NuevoPedidoForm() {
             setDetalles([
                 ...detalles,
                 {
-                    id: art.id_articulo,
+                    id_articulo: art.id_articulo,
                     nombre: art.nombre,
-                    precio: art.precio,
-                    cantidad: Number(cantidad)
+                    precio_unitario: Number(art.precio),
+                    cantidad: Number(cantidad),
+                    subtotal: Number(cantidad) * Number(art.precio)
                 }
             ]);
         }
+        
+        handleChange({
+            target: {name: "total", value: (form.total + Number(art.precio) * Number(cantidad))}
+        });
 
         // reset del selector
         setSelectedArticulo("");
         setCantidad(1);
+    };
+
+    const eliminarDetalle = (index) => {
+        Modal.confirm({
+            title: "¿Eliminar detalle?",
+            content: "Esta acción no se puede deshacer.",
+            okText: "Eliminar",
+            cancelText: "Cancelar",
+            okType: "danger",
+            onOk() {
+                setDetalles(prev => prev.filter((_, i) => i !== index));
+            }
+        });
     };
 
     return (
@@ -137,7 +176,7 @@ function NuevoPedidoForm() {
                             Número de pedido:
                         </label>
                         <input
-                            name = "codigo"
+                            name = "numero_pedido"
                             type="text"
                             value={form.numero_pedido}
                             onChange={handleChange}
@@ -300,9 +339,9 @@ function NuevoPedidoForm() {
                             {detalles.map((d, i) => (
                                 <tr key={i} className="border-t">
                                     <td className="p-2">{d.nombre}</td>
-                                    <td className="p-2">L.{d.precio}</td>
+                                    <td className="p-2">L.{d.precio_unitario}</td>
                                     <td className="p-2">{d.cantidad}</td>
-                                    <td className="p-2">L.{d.precio * d.cantidad}</td>
+                                    <td className="p-2">L.{d.precio_unitario * d.cantidad}</td>
                                     <td className="p-2 text-right">
                                         <button 
                                             className="text-red-600"
@@ -330,9 +369,9 @@ function NuevoPedidoForm() {
                                 L.
                             </span>
                             <input
-                                name="costo_unitario"
+                                name="costo_envio"
                                 type="number"
-                                value={form.costo_unitario}
+                                value={form.costo_envio}
                                 onChange={handleChange}  
                                 placeholder="Precio de venta"
                                 className="w-full pl-10 pr-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:bg-white transition-colors"
@@ -342,7 +381,7 @@ function NuevoPedidoForm() {
                     </div>
                     <div className="flex-1">
                         <label className="block font-semibold mb-2" style={{ color: '#163269' }}>
-                            Costo Venta:
+                            Total:
                         </label>
 
                         <div className="relative">
@@ -350,16 +389,16 @@ function NuevoPedidoForm() {
                                 L.
                             </span>
                             <input
-                                name = "precio"
+                                name = "total"
                                 type="number"
-                                value={form.precio}
+                                value={Number(form.total) + Number(form.costo_envio)}
                                 onChange={handleChange}
                                 placeholder="Ingresa el precio de venta en Lempiras"
                                 className="w-full pl-10 pr-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:bg-white transition-colors"
                                 style={{ focusBorderColor: '#163269' }}
-                                required
                                 onInvalid={(e) => e.target.setCustomValidity('Por favor ingresa el nombre')}
                                 onInput={(e) => e.target.setCustomValidity('')}
+                                disabled
                                 />
                             </div>
                     </div>
@@ -368,6 +407,7 @@ function NuevoPedidoForm() {
                 {/* Botones */}
                 <div className="flex justify-end gap-4 mt-6">
                     <button className="font-medium py-3 px-4 bg-gray-200 border border-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
+                        onClick = {handleCancel}
                         style={{ 
                             color: 'gray-500',
                         }}>Cancelar

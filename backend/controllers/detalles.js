@@ -8,7 +8,7 @@ function checkForNull(data, res){
         });
         return false;
     };
-        if (!data.codigo) {
+        if (!data.id_pedido) {
         res.status(422).json({
             status: "Error",
             message: "Field 'id_pedido' is required"
@@ -23,7 +23,7 @@ const nuevoDetalle = async (request, response) => {
         const data = request.body;
         if (!checkForNull(data, response)) return;
 
-        const newDetalle = await Articulo.create(data);
+        const newDetalle = await Detalle_Pedido.create(data);
         return response.status(201).json({
             status: "Success",
             message: "Detalles del pedido creado con éxito",
