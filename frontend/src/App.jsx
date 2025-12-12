@@ -7,6 +7,7 @@ import CrearUsuario from "./components/CrearUsuario.jsx";
 import UserListAdmin from "./components/UserListAdmin.jsx";
 import PedidoCardRepartidor from "./components/PedidoCardRepartidor.jsx";
 import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
+import NuevoPedidoForm from "./components/PedidoForm.jsx";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
+          <Route path="pedidos" element={<NuevoPedidoForm />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}

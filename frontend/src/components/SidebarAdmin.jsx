@@ -84,7 +84,7 @@ export function SidebarAdmin() {
         </Link>
 
         <Link 
-          to="/pedidos" 
+          to="pedidos" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
             isActive('/pedidos') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
