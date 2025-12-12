@@ -25,8 +25,10 @@ function ListaPedidosRepartidor() {
       const usuario = JSON.parse(usuarioStorage);
       const repartidorId = usuario.id_usuario;
 
+      const URL_API = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
       const response = await axios.get(
-        `http://localhost:3000/api/pedidos/repartidor/${repartidorId}/pedidos`
+        `${URL_API}/api/pedidos/repartidor/${repartidorId}/pedidos`
       );
 
       const pedidosData = response.data.data || response.data;
