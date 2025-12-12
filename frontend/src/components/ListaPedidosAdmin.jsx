@@ -1,15 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { Avatar, message } from "antd";
+import { message, Cascader } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function ListaPedidosRepartidor() {
+function ListaPedidosAdmin() {
   const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filterValue, setFilterValue] = useState(null);
 
-  //cargar pedidos a la hora de entrar
+  const options = [
+    {
+      value: "Estado",
+      label: "Estado de Pedido",
+      children: [
+        {
+          value: "Entregado",
+          label: "Entregado",
+        },
+        {
+          value: "En Transcurso",
+          label: "En Transcurso",
+        },
+        {
+          value: "Pendiente",
+          label: "Pendiente",
+        },
+        {
+          value: "Cancelado",
+          label: "Cancelado",
+        },
+        {
+          value: "Asignado",
+          label: "Asignado",
+        },
+      ],
+    },
+  ];
+
+  // Cargar pedidos al montar el componente
   useEffect(() => {
     fetchPedidos();
   }, []);
@@ -26,7 +57,7 @@ function ListaPedidosRepartidor() {
       const repartidorId = usuario.id_usuario;
 
       const response = await axios.get(
-        `http://localhost:3000/api/pedidos/repartidor/${repartidorId}/pedidos`
+        `http://localhost:3000/api/pedidos/getAllPedidos`
       );
 
       const pedidosData = response.data.data || response.data;
@@ -41,16 +72,15 @@ function ListaPedidosRepartidor() {
   };
 
   const handleEstadoColor = (estado) => {
-    if (estado === "Entregado") {
-      return "#5E9C08";
-    } else if (estado === "Cancelado") {
-      return "#BC7D3B";
-    } else if (estado === "En Transcurso") {
-      return "#2C4D8E";
-    } else if (estado === "Pendiente") {
-      return "#ECB01F";
-    }
+    if (estado === "Entregado") return "#5E9C08";
+    if (estado === "Cancelado") return "#BC7D3B";
+    if (estado === "En Transcurso") return "#2C4D8E";
+    if (estado === "Pendiente") return "#ECB01F";
     return "#163269";
+  };
+
+  const onChange = (value) => {
+    setFilterValue(value && value.length ? value[value.length - 1] : null);
   };
 
   return (
@@ -58,7 +88,7 @@ function ListaPedidosRepartidor() {
       <div className="max-w-5xl">
         {/* Header (page) */}
         <div
-          className="flex items-center justify-between mb-5 border-b-4"
+          className="flex items-center justify-between mb-5 border-b-4 gap-4"
           style={{ borderColor: "#163269" }}
         >
           <h1
@@ -67,11 +97,31 @@ function ListaPedidosRepartidor() {
           >
             Lista de Pedidos
           </h1>
+
+          <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
+            Total de pedidos:{" "}
+            {
+              (filterValue
+                ? pedidos.filter((p) => p.estado === filterValue)
+                : pedidos
+              ).length
+            }
+          </span>
+        </div>
+        <div className="flex items-center justify-end mb-1 gap-1">
           <span
-            className="text-xl font-bold pb-4 "
+            className="text-xl pb-4 flex items-center gap-2 cursor-pointer"
             style={{ color: "#163269" }}
           >
-            Total de pedidos: {pedidos.length}
+            <Cascader
+              options={options}
+              onChange={onChange}
+              placeholder={
+                <span className="flex items-center gap-2">
+                  <FilterOutlined /> Filtrar
+                </span>
+              }
+            />
           </span>
         </div>
 
@@ -90,12 +140,15 @@ function ListaPedidosRepartidor() {
         ) : pedidos.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg" style={{ color: "#163269" }}>
-              No hay pedidos asignados
+              No hay pedidos existentes
             </p>
           </div>
         ) : (
           <div className="space-y-6">
-            {pedidos.map((pedido) => (
+            {(filterValue
+              ? pedidos.filter((p) => p.estado === filterValue)
+              : pedidos
+            ).map((pedido) => (
               <div
                 key={pedido.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
@@ -118,6 +171,7 @@ function ListaPedidosRepartidor() {
                       )}
                     </p>
                   </div>
+
                   <span
                     className="px-6 py-1 rounded-full text-white font-medium shadow-lg self-start"
                     style={{
@@ -136,4 +190,4 @@ function ListaPedidosRepartidor() {
   );
 }
 
-export default ListaPedidosRepartidor;
+export default ListaPedidosAdmin;
