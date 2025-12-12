@@ -10,6 +10,7 @@ var pedidoRouter = require("./routes/pedido");
 var calificacionRouter = require("./routes/calificacion");
 var estadisticasRouter = require("./routes/estadisticas");
 var usuarioController = require("./controllers/usuario");
+var detallesRouter = require('./routes/detalles');
 var authMiddleware = require("./middleware/auth");
 var app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/usuarios", authMiddleware, usuarioRouter);
 app.use("/api/pedidos", authMiddleware, pedidoRouter);
 app.use("/api/calificaciones", authMiddleware, calificacionRouter);
 app.use("/api/estadisticas", authMiddleware, estadisticasRouter);
+app.use("/api/detalles", authMiddleware, detallesRouter);
 
 // Login endpoint (no necesita autenticación)
 app.post("/api/login", usuarioController.loginUsuario);

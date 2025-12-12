@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { FaHome, FaWarehouse, FaUsers, FaBox, FaTruck, FaUser, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaHome,
+  FaWarehouse,
+  FaUsers,
+  FaBox,
+  FaTruck,
+  FaUser,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import logo from "../assets/LogoFerreteriaVillamil.png";
 
 // Configurar axios para enviar token en todas las peticiones
-axios.interceptors.request.use(config => {
-  const token = sessionStorage.getItem('token');
+axios.interceptors.request.use((config) => {
+  const token = sessionStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -19,16 +27,16 @@ export function SidebarAdmin() {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const usuarioData = sessionStorage.getItem('usuario');
+    const usuarioData = sessionStorage.getItem("usuario");
     if (usuarioData) {
       setUserData(JSON.parse(usuarioData));
     }
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('usuario');
-    navigate('/');
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("usuario");
+    navigate("/");
   };
 
   const isActive = (path) => location.pathname === path;
@@ -47,14 +55,18 @@ export function SidebarAdmin() {
 
       {/*Menu */}
       <nav className="flex-1 py-8">
-        <Link 
-          to="/dashboard" 
+        <Link
+          to="/dashboard"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/dashboard') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive("/dashboard") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaHome className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/dashboard') && 'underline'}`}>
+          <span
+            className={`text-lg font-semibold ${
+              !isActive("/dashboard") && "underline"
+            }`}
+          >
             Dashboard
           </span>
         </Link>
@@ -71,38 +83,50 @@ export function SidebarAdmin() {
           </span>
         </Link>
 
-        <Link 
-          to="/admin/usuarios" 
+        <Link
+          to="/admin/usuarios"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/admin/usuarios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive("/admin/usuarios") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaUsers className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/usuarios') && 'underline'}`}>
+          <span
+            className={`text-lg font-semibold ${
+              !isActive("/usuarios") && "underline"
+            }`}
+          >
             Usuarios
           </span>
         </Link>
 
-        <Link 
-          to="/pedidos" 
+        <Link
+          to="/admin/pedidos"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/pedidos') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive("/admin/pedidos") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaBox className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/pedidos') && 'underline'}`}>
+          <span
+            className={`text-lg font-semibold ${
+              !isActive("/pedidos") && "underline"
+            }`}
+          >
             Pedidos
           </span>
         </Link>
 
-        <Link 
-          to="/envios" 
+        <Link
+          to="/envios"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive('/envios') ? 'text-[#BC7D3B]' : 'text-[#163269]'
+            isActive("/envios") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaTruck className="w-6 h-6" />
-          <span className={`text-lg font-semibold ${!isActive('/envios') && 'underline'}`}>
+          <span
+            className={`text-lg font-semibold ${
+              !isActive("/envios") && "underline"
+            }`}
+          >
             Envíos
           </span>
         </Link>
@@ -117,7 +141,9 @@ export function SidebarAdmin() {
             </div>
             <div>
               <div className="font-semibold text-black">Bienvenido</div>
-              <div className="text-[#163269]">{userData?.nombre || 'Usuario'}</div>
+              <div className="text-[#163269]">
+                {userData?.nombre || "Usuario"}
+              </div>
             </div>
           </div>
           <button
