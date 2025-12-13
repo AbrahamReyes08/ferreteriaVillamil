@@ -7,6 +7,8 @@ import CrearUsuario from "./components/CrearUsuario.jsx";
 import UserListAdmin from "./components/UserListAdmin.jsx";
 import PedidoCardRepartidor from "./components/PedidoCardRepartidor.jsx";
 import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
+import NuevoArticuloForm from "./components/ItemForm.jsx";
+import InventarioList from "./components/InventarioList.jsx";
 import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
 
@@ -29,6 +31,8 @@ function App() {
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
+          <Route path="inventario/crear-articulo" element={<NuevoArticuloForm />} />
+          <Route path="inventario" element={<InventarioList />} />
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
           <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
         </Route>

@@ -71,18 +71,14 @@ export function SidebarAdmin() {
           </span>
         </Link>
 
-        <Link
-          to="/inventario"
+        <Link 
+          to="inventario" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/inventario") ? "text-[#BC7D3B]" : "text-[#163269]"
+            isActive('/admin/inventario') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}
         >
           <FaWarehouse className="w-6 h-6" />
-          <span
-            className={`text-lg font-semibold ${
-              !isActive("/inventario") && "underline"
-            }`}
-          >
+          <span className={`text-lg font-semibold ${!isActive('/admin/inventario') && 'underline'}`}>
             Inventario
           </span>
         </Link>
