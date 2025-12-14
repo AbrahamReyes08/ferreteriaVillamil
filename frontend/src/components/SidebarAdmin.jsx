@@ -72,7 +72,7 @@ export function SidebarAdmin() {
         </Link>
 
         <Link 
-          to="inventario" 
+          to="/admin/inventario" 
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
             isActive('/admin/inventario') ? 'text-[#BC7D3B]' : 'text-[#163269]'
           }`}

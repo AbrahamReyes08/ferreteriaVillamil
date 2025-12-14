@@ -2,25 +2,75 @@ import React, { useState, useEffect } from 'react';
 import { Avatar, message } from 'antd';
 import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import ModalDeshabilitarArticulo from './ItemEstadoModal';
 
 function InventarioList() {
     const [articulos, setArticulos] = useState([]);
     const [error, setError] = useState('');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [articuloSel, setArticuloSel] = useState(null);
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const navigate = useNavigate();
+    const baseUrl = import.meta.env.VITE_SERVER_URL;
     
     const fetchArticulos = async () => {
         try {
-            const baseUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
             const response = await axios.get(`${baseUrl}/articulos/list`);
 
             setArticulos(response.data.data);
         } catch (err) {
-            const errorMsg = err.response?.data?.message || 'Error al cargar pedidos';
-            setError(errorMsg);
+            const errorMsg = err.response?.data?.message || 'Error al cargar articulos';
             message.error(errorMsg);
         }
     }
+
+    const sortedArticulos = React.useMemo(() => {
+    if (!articulos) return [];
+
+    const sortable = [...articulos];
+        if (sortConfig.key) {
+            sortable.sort((a, b) => {
+            let aValue = a[sortConfig.key];
+            let bValue = b[sortConfig.key];
+
+            if (sortConfig.key === 'costo_unitario' || sortConfig.key === 'precio') {
+                aValue = Number(a[sortConfig.key]);
+                bValue = Number(b[sortConfig.key]);
+            } else if (sortConfig.key === 'costo_util') {
+                aValue = Number(a.precio) - Number(a.costo_unitario);
+                bValue = Number(b.precio) - Number(b.costo_unitario);
+            } else {
+                aValue = a[sortConfig.key];
+                bValue = b[sortConfig.key];
+            }
+
+            // Para strings
+            if (typeof aValue === 'string') {
+                aValue = aValue.toLowerCase();
+                bValue = bValue.toLowerCase();
+            } 
+
+            if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+            return 0;
+            });
+        }
+        return sortable;
+    }, [articulos, sortConfig]);
+
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const abrirModalBloqueo = (articulo) => {
+        setArticuloSel(articulo);
+        setModalOpen(true);
+    };
 
     const handleNuevoArticulo = async () => {
         navigate('/admin/inventario/crear-articulo')
@@ -61,26 +111,26 @@ function InventarioList() {
                     <table className="w-full">
                     <thead>
                         <tr className="border-b-2 border-gray-200">
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Codigo
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('codigo')}>
+                            Codigo {sortConfig.key === 'codigo' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Articulo
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('nombre')}>
+                            Articulo {sortConfig.key === 'nombre' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Costo (L.)
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_unitario')}>
+                            Costo (L.) {sortConfig.key === 'costo_unitario' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Precio (L.)
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('precio')}>
+                            Precio (L.) {sortConfig.key === 'precio' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Costo Util (L.)
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_util')}>
+                            Costo Util (L.) {sortConfig.key === 'costo_util' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            En Existencia
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('cantidad_existencia')}>
+                            En Existencia {sortConfig.key === 'cantidad_existencia' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black">
-                            Disponible
+                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('estado')}>
+                            Disponible {sortConfig.key === 'estado' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                         </th>
                         <th className="px-4 py-4 text-right text-sm lg:text-lg font-bold text-black">
                             Acciones
@@ -88,7 +138,7 @@ function InventarioList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {articulos.map((item, index) => (
+                        {sortedArticulos.map((item, index) => (
                         <tr
                             key={item.codigo}
                             className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
@@ -138,6 +188,7 @@ function InventarioList() {
                                 </button>
                                 <button
                                 className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                onClick={() => abrirModalBloqueo(item)}
                                 title="Bloquear"
                                 >
                                 <LockOutlined className="w-5 h-5 text-black" />
@@ -150,6 +201,20 @@ function InventarioList() {
                     </table>
                 </div>
             </div>
+            <ModalDeshabilitarArticulo
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                articulo={articuloSel}
+                onGuardar={async (articuloActualizado) => {
+                    console.log(articuloActualizado)
+                    await axios.put(
+                        `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
+                        { estado: articuloActualizado.estado , codigo: articuloActualizado.codigo}
+                    );
+
+                    fetchArticulos();
+                }}
+            />
         </div>
     )
 }
