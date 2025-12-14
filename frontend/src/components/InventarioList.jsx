@@ -5,12 +5,14 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ModalDeshabilitarArticulo from './ItemEstadoModal';
 import ModalEditarCantidad from './ItemInventarioModal';
+import ModalEliminarArticulo from './ItemBorrarModal';
 
 function InventarioList() {
     const [articulos, setArticulos] = useState([]);
     const [error, setError] = useState('');
     const [modalEstadoOpen, setModalEstadoOpen] = useState(false);
     const [modalCantidadOpen, setModalCantidadOpen] = useState(false);
+    const [modalEliminarOpen, setModalEliminarOpen] = useState(false);
     const [articuloSel, setArticuloSel] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const navigate = useNavigate();
@@ -81,6 +83,11 @@ function InventarioList() {
     const abrirModalCantidad = (articulo) => {
         setArticuloSel(articulo);
         setModalCantidadOpen(true);
+    };
+
+    const abrirModalEliminar = (articulo) => {
+        setArticuloSel(articulo);
+        setModalEliminarOpen(true)
     }
 
     const handleNuevoArticulo = async () => {
@@ -89,11 +96,11 @@ function InventarioList() {
 
     useEffect(() => {
         fetchArticulos();
-    }, );
+    }, []);
 
     return (
         <div className="w-full">
-            <div className="max-w-5xl">
+            <div>
                 {/* Header */}
                     <h1 className="text-3xl font-bold mb-5 pb-4 border-b-4" style={{ color: '#163269', borderColor: '#163269' }}>
                         Inventario
@@ -131,7 +138,7 @@ function InventarioList() {
                         <table className="w-full">
                         <thead>
                             <tr className="border-b-2 border-gray-200">
-                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('codigo')}>
+                            <th className="px-3 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('codigo')}>
                                 Codigo {sortConfig.key === 'codigo' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                             </th>
                             <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('nombre')}>
@@ -146,7 +153,7 @@ function InventarioList() {
                             <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_util')}>
                                 Costo Util (L.) {sortConfig.key === 'costo_util' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                             </th>
-                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('cantidad_existencia')}>
+                            <th className="px-2 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('cantidad_existencia')}>
                                 En Existencia {sortConfig.key === 'cantidad_existencia' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
                             </th>
                             <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('estado')}>
@@ -187,28 +194,29 @@ function InventarioList() {
                                 {item.estado}
                                 </td>
                                 <td className="px-4 py-4">
-                                <div className="flex items-center justify-end gap-2">
+                                <div className="flex items-center justify-end gap-1">
                                     <button
-                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    className="p-1 hover:bg-gray-200 rounded-md transition-colors"
                                     title="Editar"
                                     >
                                     <EditOutlined className="w-5 h-5 text-black" />
                                     </button>
                                     <button
-                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    className="p-1 hover:bg-gray-200 rounded-md transition-colors"
+                                    onClick = {() => abrirModalEliminar(item)}
                                     title="Eliminar"
                                     >
                                     <DeleteOutlined className="w-5 h-5 text-black" />
                                     </button>
                                     <button
-                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    className="p-1 hover:bg-gray-200 rounded-md transition-colors"
                                     onClick={() => abrirModalCantidad(item)}
                                     title="Añadir"
                                     >
                                     <PlusCircleOutlined className="w-5 h-5 text-black" />
                                     </button>
                                     <button
-                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    className="p-1 hover:bg-gray-200 rounded-md transition-colors"
                                     onClick={() => abrirModalBloqueo(item)}
                                     title="Bloquear"
                                     >
@@ -227,7 +235,6 @@ function InventarioList() {
                 onClose={() => setModalEstadoOpen(false)}
                 articulo={articuloSel}
                 onGuardar={async (articuloActualizado) => {
-                    console.log(articuloActualizado)
                     await axios.put(
                         `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
                         { estado: articuloActualizado.estado , codigo: articuloActualizado.codigo}
@@ -240,10 +247,20 @@ function InventarioList() {
                 onClose={() => setModalCantidadOpen(false)}
                 articulo={articuloSel}
                 onGuardar={async (articuloActualizado) => {
-                    console.log(articuloActualizado)
                     await axios.put(
                         `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
                         { cantidad_existencia: articuloActualizado.cantidad_existencia , codigo: articuloActualizado.codigo}
+                    );
+                    fetchArticulos();
+                }}
+            />
+            <ModalEliminarArticulo
+                open={modalEliminarOpen}
+                onClose={() => setModalEliminarOpen(false)}
+                articulo={articuloSel}
+                onConfirm={async (articulo) => {
+                    await axios.delete(
+                        `${baseUrl}/articulos/delete/${articulo.codigo}`
                     );
                     fetchArticulos();
                 }}
