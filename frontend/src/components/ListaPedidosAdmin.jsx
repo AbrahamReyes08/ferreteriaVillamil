@@ -139,7 +139,7 @@ function ListaPedidosAdmin() {
                     </span>
 
                     <button
-                      className="px-6 py-1 text-white font-medium"
+                      className="px-5 py-1 text-white font-medium"
                       title="Asignar repartidor"
                     >
                       <SelectOutlined
