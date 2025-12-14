@@ -33,7 +33,7 @@ function NuevoPedidoForm() {
     const fetchArticulos = async () => {
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/articulos/list`
+                `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/articulos/list/active`
             );
 
             setArticulos(response.data.data)
