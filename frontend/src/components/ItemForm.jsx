@@ -1,12 +1,5 @@
 import React, { useState } from "react";
 import { Avatar, message } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  EditOutlined,
-  UserDeleteOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -27,7 +20,6 @@ function NuevoArticuloForm() {
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
-    console.log(form);
   };
 
   const handleInteger = (event) => {
@@ -41,13 +33,32 @@ function NuevoArticuloForm() {
     setLoading(true);
 
     try {
+      const nombreSinEspacios = form.nombre.replace(/\s/g, '');
+      const codigoProvisional = nombreSinEspacios.substring(0, 4).toUpperCase();
+
+      
+      const formToSend = { ...form, codigo: codigoProvisional };
+      console.log(formToSend);
+
       const response = await axios.post(
         `${
           import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
         }/articulos/new`,
-        form
+        formToSend
       );
-      console.log(response.data);
+      console.log(response.data.data)
+      const idGenerado = response.data.data.id_articulo;
+      const idFormateado = String(idGenerado).padStart(3, "0");
+      const codigoFinal = `${codigoProvisional}${idFormateado}`;
+      console.log(idGenerado, idFormateado, codigoFinal);
+
+      await axios.put(
+        `${
+          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+        }/articulos/edit/${response.data.data.codigo}`,
+        { codigo: codigoFinal }
+      );
+
       message.success("Artículo creado exitosamente");
 
       setForm({
@@ -63,6 +74,7 @@ function NuevoArticuloForm() {
       setLoading(false);
       navigate("/admin/inventario");
     } catch (err) {
+      console.log(err)
       message.error("Error al crear artículo. Llene todos los campos");
     } finally {
       setLoading(false);
@@ -88,28 +100,6 @@ function NuevoArticuloForm() {
 
         {/* Código + Nombre */}
         <div className="flex gap-5 mb-4">
-          <div className="flex-1">
-            <label
-              className="block font-semibold mb-2"
-              style={{ color: "#163269" }}
-            >
-              Codigo:
-            </label>
-            <input
-              name="codigo"
-              type="text"
-              value={form.codigo}
-              onChange={handleChange}
-              placeholder="Ingresa el codigo"
-              className="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:bg-white transition-colors"
-              style={{ focusBorderColor: "#163269" }}
-              required
-              onInvalid={(e) =>
-                e.target.setCustomValidity("Por favor ingresa el nombre")
-              }
-              onInput={(e) => e.target.setCustomValidity("")}
-            />
-          </div>
           <div className="flex-1">
             <label
               className="block font-semibold mb-2"
@@ -317,7 +307,7 @@ function NuevoArticuloForm() {
           <button
             className="font-medium py-3 px-4 bg-gray-200 border border-gray-500 rounded-lg transition-colors disabled:cursor-not-allowed"
             onClick={handleCancelar}
-            disable={!loading}
+            disabled={loading}
             style={{
               color: "gray-500",
             }}
@@ -327,6 +317,7 @@ function NuevoArticuloForm() {
           <button
             className="font-medium py-3 px-4 rounded-lg transition-colors disabled:cursor-not-allowed"
             onClick={handleSubmit}
+            disabled={loading}
             style={{
               backgroundColor: "#163269",
               color: "white",
