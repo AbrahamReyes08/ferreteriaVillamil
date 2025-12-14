@@ -11,6 +11,7 @@ router.post("/:id/generar-codigo", userCtrl.mandarCodigoEntregado);
 router.post("/:id/:codigo/validar-codigo", userCtrl.validarCodigoEntregado);
 router.get("/repartidor/:id_repartidor/pedidos", userCtrl.getPedidosByRepartidor);
 router.get("/repartidor/:id_repartidor/pedidos-activos", userCtrl.getPedidosActivosByRepartidor);
+router.post("/:id/asignar-repartidor", userCtrl.asignarRepartidor);
 //Este comentario deberia arreglar el bug de sync con el repo
 
 module.exports = router;
