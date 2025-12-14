@@ -71,7 +71,7 @@ function ListaPedidosAdmin() {
           </h1>
 
           <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
-            Total de pedidos pendientes de asignar:{" "}
+            Total de pedidos pendientes por asignar:{" "}
             {
               (filterValue
                 ? pedidos.filter((p) => p.estado === filterValue)
