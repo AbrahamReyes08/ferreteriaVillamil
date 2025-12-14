@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { message } from 'antd';
 import axios from 'axios';
 
 const AsignarRepartidorModal = ({ isOpen, onClose, onAssign, repartidores = [], pedidoId }) => {
@@ -8,14 +9,13 @@ const AsignarRepartidorModal = ({ isOpen, onClose, onAssign, repartidores = [], 
 
   const handleAssignRepartidor = async () => {
     try {
-      console.log('Asignando repartidor:', selectedRepartidor, 'al pedido:', pedidoId);
       const response = await axios.post(`http://localhost:3000/api/pedidos/${pedidoId}/asignar-repartidor`, { id_repartidor: selectedRepartidor });
       onAssign(selectedRepartidor);
       setSelectedRepartidor('');
+      message.success('Repartidor asignado correctamente');
       onClose();
     } catch (error) {
-      console.error('Error al asignar repartidor:', error);
-      alert('Error al asignar repartidor: ' + (error.response?.data?.message || error.message));
+      message.error('Error al asignar repartidor: ' + (error.response?.data?.message || error.message));
     }
   };
 
