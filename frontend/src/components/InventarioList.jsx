@@ -4,11 +4,13 @@ import { DeleteOutlined, EditOutlined, LockOutlined, PlusCircleOutlined } from '
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ModalDeshabilitarArticulo from './ItemEstadoModal';
+import ModalEditarCantidad from './ItemInventarioModal';
 
 function InventarioList() {
     const [articulos, setArticulos] = useState([]);
     const [error, setError] = useState('');
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalEstadoOpen, setModalEstadoOpen] = useState(false);
+    const [modalCantidadOpen, setModalCantidadOpen] = useState(false);
     const [articuloSel, setArticuloSel] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const navigate = useNavigate();
@@ -67,10 +69,19 @@ function InventarioList() {
         setSortConfig({ key, direction });
     };
 
+    const clearSort = () => {
+        setSortConfig({ key: null, direction: 'asc' });
+    }
+
     const abrirModalBloqueo = (articulo) => {
         setArticuloSel(articulo);
-        setModalOpen(true);
+        setModalEstadoOpen(true);
     };
+
+    const abrirModalCantidad = (articulo) => {
+        setArticuloSel(articulo);
+        setModalCantidadOpen(true);
+    }
 
     const handleNuevoArticulo = async () => {
         navigate('/admin/inventario/crear-articulo')
@@ -78,7 +89,7 @@ function InventarioList() {
 
     useEffect(() => {
         fetchArticulos();
-    }, []);
+    }, );
 
     return (
         <div className="w-full">
@@ -100,110 +111,120 @@ function InventarioList() {
                 {/* Inventory Table Card */}
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
                     {/* Table Header */}
-                    <div className="text-center py-4" style={{ backgroundColor: '#5DADE2' }}>
-                        <h2 className="text-2xl font-bold text-inventory-navy">
+                    <div
+                        className="flex items-center justify-between py-4 px-6"
+                        style={{ backgroundColor: '#5DADE2' }}
+                    >
+                        <h2 className="text-2xl font-bold text-inventory-navy text-center flex-1">
                         Inventario actual
                         </h2>
-                </div>
-                
-                {/* Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full">
-                    <thead>
-                        <tr className="border-b-2 border-gray-200">
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('codigo')}>
-                            Codigo {sortConfig.key === 'codigo' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('nombre')}>
-                            Articulo {sortConfig.key === 'nombre' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_unitario')}>
-                            Costo (L.) {sortConfig.key === 'costo_unitario' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('precio')}>
-                            Precio (L.) {sortConfig.key === 'precio' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_util')}>
-                            Costo Util (L.) {sortConfig.key === 'costo_util' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('cantidad_existencia')}>
-                            En Existencia {sortConfig.key === 'cantidad_existencia' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('estado')}>
-                            Disponible {sortConfig.key === 'estado' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
-                        </th>
-                        <th className="px-4 py-4 text-right text-sm lg:text-lg font-bold text-black">
-                            Acciones
-                        </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sortedArticulos.map((item, index) => (
-                        <tr
-                            key={item.codigo}
-                            className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                            index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                            }`}
+                        <button
+                        className="ml-auto px-4 py-2 bg-white text-inventory-navy rounded-md hover:bg-gray-200 transition-colors"
+                        onClick={clearSort}
                         >
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {item.codigo}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {item.nombre}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {Number(item.costo_unitario).toFixed(2)}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {Number(item.precio).toFixed(2)}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {(Number(item.precio) - Number(item.costo_unitario)).toFixed(2)}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {Number(item.cantidad_existencia)}
-                            </td>
-                            <td className="px-4 py-4 text-sm lg:text-lg text-black">
-                            {item.estado}
-                            </td>
-                            <td className="px-4 py-4">
-                            <div className="flex items-center justify-end gap-2">
-                                <button
-                                className="p-2 hover:bg-gray-200 rounded-md transition-colors"
-                                title="Editar"
-                                >
-                                <EditOutlined className="w-5 h-5 text-black" />
-                                </button>
-                                <button
-                                className="p-2 hover:bg-gray-200 rounded-md transition-colors"
-                                title="Eliminar"
-                                >
-                                <DeleteOutlined className="w-5 h-5 text-black" />
-                                </button>
-                                <button
-                                className="p-2 hover:bg-gray-200 rounded-md transition-colors"
-                                title="Añadir"
-                                >
-                                <PlusCircleOutlined className="w-5 h-5 text-black" />
-                                </button>
-                                <button
-                                className="p-2 hover:bg-gray-200 rounded-md transition-colors"
-                                onClick={() => abrirModalBloqueo(item)}
-                                title="Bloquear"
-                                >
-                                <LockOutlined className="w-5 h-5 text-black" />
-                                </button>
-                            </div>
-                            </td>
-                        </tr>
-                        ))}
-                    </tbody>
-                    </table>
+                        Quitar ordenamiento
+                        </button>
+                    </div>
+                    
+                    {/* Table */}
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                        <thead>
+                            <tr className="border-b-2 border-gray-200">
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('codigo')}>
+                                Codigo {sortConfig.key === 'codigo' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('nombre')}>
+                                Articulo {sortConfig.key === 'nombre' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_unitario')}>
+                                Costo (L.) {sortConfig.key === 'costo_unitario' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('precio')}>
+                                Precio (L.) {sortConfig.key === 'precio' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('costo_util')}>
+                                Costo Util (L.) {sortConfig.key === 'costo_util' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('cantidad_existencia')}>
+                                En Existencia {sortConfig.key === 'cantidad_existencia' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-left text-sm lg:text-lg font-bold text-black" onClick={() => requestSort('estado')}>
+                                Disponible {sortConfig.key === 'estado' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}
+                            </th>
+                            <th className="px-4 py-4 text-right text-sm lg:text-lg font-bold text-black">
+                                Acciones
+                            </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {sortedArticulos.map((item, index) => (
+                            <tr
+                                key={item.codigo}
+                                className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
+                                index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                                }`}
+                            >
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {item.codigo}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {item.nombre}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {Number(item.costo_unitario).toFixed(2)}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {Number(item.precio).toFixed(2)}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {(Number(item.precio) - Number(item.costo_unitario)).toFixed(2)}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {Number(item.cantidad_existencia)}
+                                </td>
+                                <td className="px-4 py-4 text-sm lg:text-lg text-black">
+                                {item.estado}
+                                </td>
+                                <td className="px-4 py-4">
+                                <div className="flex items-center justify-end gap-2">
+                                    <button
+                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    title="Editar"
+                                    >
+                                    <EditOutlined className="w-5 h-5 text-black" />
+                                    </button>
+                                    <button
+                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    title="Eliminar"
+                                    >
+                                    <DeleteOutlined className="w-5 h-5 text-black" />
+                                    </button>
+                                    <button
+                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    onClick={() => abrirModalCantidad(item)}
+                                    title="Añadir"
+                                    >
+                                    <PlusCircleOutlined className="w-5 h-5 text-black" />
+                                    </button>
+                                    <button
+                                    className="p-2 hover:bg-gray-200 rounded-md transition-colors"
+                                    onClick={() => abrirModalBloqueo(item)}
+                                    title="Bloquear"
+                                    >
+                                    <LockOutlined className="w-5 h-5 text-black" />
+                                    </button>
+                                </div>
+                                </td>
+                            </tr>
+                            ))}
+                        </tbody>
+                        </table>
                 </div>
             </div>
             <ModalDeshabilitarArticulo
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
+                open={modalEstadoOpen}
+                onClose={() => setModalEstadoOpen(false)}
                 articulo={articuloSel}
                 onGuardar={async (articuloActualizado) => {
                     console.log(articuloActualizado)
@@ -211,7 +232,19 @@ function InventarioList() {
                         `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
                         { estado: articuloActualizado.estado , codigo: articuloActualizado.codigo}
                     );
-
+                    fetchArticulos();
+                }}
+            />
+            <ModalEditarCantidad
+                open={modalCantidadOpen}
+                onClose={() => setModalCantidadOpen(false)}
+                articulo={articuloSel}
+                onGuardar={async (articuloActualizado) => {
+                    console.log(articuloActualizado)
+                    await axios.put(
+                        `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
+                        { cantidad_existencia: articuloActualizado.cantidad_existencia , codigo: articuloActualizado.codigo}
+                    );
                     fetchArticulos();
                 }}
             />
