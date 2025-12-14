@@ -11,6 +11,7 @@ import NuevoArticuloForm from "./components/ItemForm.jsx";
 import InventarioList from "./components/InventarioList.jsx";
 import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
+import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="inventario" element={<InventarioList />} />
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
           <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
+          <Route path="envios" element={<ListEnviosAdmin />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}
