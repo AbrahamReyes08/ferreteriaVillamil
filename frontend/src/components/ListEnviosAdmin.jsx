@@ -1,44 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { message } from "antd";
-import { SelectOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import AsignarRepartidorModal from "./AsignarRepartidorModal";
+import { useNavigate } from "react-router-dom";
+//import CancelarEnvioModal from "./CancelarEnvioModal";
 
-function ListaPedidosAdmin() {
-  const [pedidos, setPedidos] = useState([]);
+function ListEnviosAdmin() {
+  const navigate = useNavigate();
+  const [envios, setEnvios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterValue, setFilterValue] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [repartidores, setRepartidores] = useState([]);
-  const [selectedPedido, setSelectedPedido] = useState(null);
+  const [selectedEnvio, setSelectedEnvio] = useState(null);
   
-  const handleOpenModal = (pedido) => {
-    setSelectedPedido(pedido);
+  const handleOpenModal = (envio) => {
+    setSelectedEnvio(envio);
     setIsModalVisible(true);
   };
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
-    setSelectedPedido(null);
+    setSelectedEnvio(null);
   };
 
   const handleAssignRepartidor = async (repartidorId) => {
     try {
       message.success('Repartidor asignado exitosamente');
-      await fetchPedidos();
+      await fetchEnvios();
     } catch (error) {
       message.error('Error al asignar repartidor');
     }
   };
 
   useEffect(() => {
-    fetchPedidos();
+    fetchEnvios();
     fetchRepartidores();
     onChange("Pendiente");
   }, []);
 
-  const fetchPedidos = async () => {
+  const fetchEnvios = async () => {
     setLoading(true);
     try {
       // Obtener usuario logueado
@@ -53,10 +55,10 @@ function ListaPedidosAdmin() {
         `http://localhost:3000/api/pedidos/getAllPedidos`
       );
 
-      const pedidosData = response.data.data || response.data;
-      setPedidos(pedidosData);
+      const enviosData = response.data.data || response.data;
+      setEnvios(enviosData);
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Error al cargar pedidos";
+      const errorMsg = err.response?.data?.message || "Error al cargar envios";
       setError(errorMsg);
       message.error(errorMsg);
     } finally {
@@ -95,6 +97,7 @@ function ListaPedidosAdmin() {
   };
 
   return (
+    console.log("hola"),
     <div className="w-full">
       <div className="max-w-5xl">
         {/* Header (page) */}
@@ -106,15 +109,15 @@ function ListaPedidosAdmin() {
             className="text-3xl font-bold pb-4 flex-1"
             style={{ color: "#163269" }}
           >
-            Lista de Pedidos
+            Lista de Envios
           </h1>
 
           <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
-            Total de pedidos pendientes por asignar:{" "}
+            Total de envios:{" "}
             {
               (filterValue
-                ? pedidos.filter((p) => p.estado === filterValue)
-                : pedidos
+                ? envios.filter((p) => p.estado !== filterValue)
+                : envios
               ).length
             }
           </span>
@@ -129,39 +132,39 @@ function ListaPedidosAdmin() {
         {loading ? (
           <div className="text-center py-10">
             <p className="text-lg" style={{ color: "#163269" }}>
-              Cargando pedidos...
+              Cargando envios...
             </p>
           </div>
-        ) : pedidos.length === 0 ? (
+        ) : envios.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-lg" style={{ color: "#163269" }}>
-              No hay pedidos existentes
+              No hay envios existentes
             </p>
           </div>
         ) : (
           <div className="space-y-6">
             {(filterValue
-              ? pedidos.filter((p) => p.estado === filterValue)
-              : pedidos
-            ).map((pedido) => (
+              ? envios.filter((p) => p.estado !== filterValue)
+              : envios
+            ).map((envio) => (
               <div
-                key={pedido.id_pedido}
+                key={envio.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
                 <div className="p-6 flex justify-between">
                   <div className="space-y-2">
                     <p className="text-base" style={{ color: "#163269" }}>
-                      Cliente: {pedido.cliente_nombre}
+                      Cliente: {envio.cliente_nombre}
                     </p>
                     <p className="text-base" style={{ color: "#163269" }}>
-                      {pedido.direccion_entrega}
+                      {envio.direccion_entrega}
                     </p>
                     <p className="text-base" style={{ color: "#163269" }}>
-                      Costo total: L.{pedido.total}
+                      Costo total: L.{envio.total}
                     </p>
                     <p className="text-base" style={{ color: "#163269" }}>
                       Fecha de creación:{" "}
-                      {new Date(pedido.fecha_creacion).toLocaleDateString(
+                      {new Date(envio.fecha_creacion).toLocaleDateString(
                         "es-HN"
                       )}
                     </p>
@@ -171,18 +174,18 @@ function ListaPedidosAdmin() {
                     <span
                       className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
                       style={{
-                        backgroundColor: handleEstadoColor(pedido.estado),
+                        backgroundColor: handleEstadoColor(envio.estado),
                       }}
                     >
-                      {pedido.estado}
+                      {envio.estado}
                     </span>
 
                     <button
-                      onClick={() => handleOpenModal(pedido)}
+                     // onClick={() => handleOpenModal(envio)}
                       className="px-5 py-1 text-white font-medium"
-                      title="Asignar repartidor"
+                      title="Cancelar envio"
                     >
-                      <SelectOutlined
+                      <CloseCircleOutlined
                         className="text-2xl"
                         style={{ color: "#163269" }}
                       />
@@ -195,15 +198,15 @@ function ListaPedidosAdmin() {
         )}
       </div>
 
-      <AsignarRepartidorModal
+      {/* <AsignarRepartidorModal
         isOpen={isModalVisible}
         onClose={handleCloseModal}
         onAssign={handleAssignRepartidor}
         repartidores={repartidores}
-        pedidoId={selectedPedido?.id_pedido}
-      />
+        envioId={selectedEnvio?.id_pedido}
+      /> */}
     </div>
   );
 }
 
-export default ListaPedidosAdmin;
+export default ListEnviosAdmin;
