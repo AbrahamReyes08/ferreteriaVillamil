@@ -92,7 +92,7 @@ export function SidebarAdmin() {
           <FaUsers className="w-6 h-6" />
           <span
             className={`text-lg font-semibold ${
-              !isActive("/usuarios") && "underline"
+              !isActive("/admin/usuarios") && "underline"
             }`}
           >
             Usuarios
@@ -108,7 +108,7 @@ export function SidebarAdmin() {
           <FaBox className="w-6 h-6" />
           <span
             className={`text-lg font-semibold ${
-              !isActive("/pedidos") && "underline"
+              !isActive("/admin/pedidos") && "underline"
             }`}
           >
             Pedidos
@@ -116,15 +116,15 @@ export function SidebarAdmin() {
         </Link>
 
         <Link
-          to="/envios"
+          to="/admin/envios"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/envios") ? "text-[#BC7D3B]" : "text-[#163269]"
+            isActive("/admin/envios") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaTruck className="w-6 h-6" />
           <span
             className={`text-lg font-semibold ${
-              !isActive("/envios") && "underline"
+              !isActive("/admin/envios") && "underline"
             }`}
           >
             Envíos

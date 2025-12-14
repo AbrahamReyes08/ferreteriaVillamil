@@ -3,8 +3,10 @@ import { message } from "antd";
 import { SelectOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AsignarRepartidorModal from "./AsignarRepartidorModal";
+  import { useNavigate } from "react-router-dom";
 
 function ListaPedidosAdmin() {
+  const navigate = useNavigate();
   const [pedidos, setPedidos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -118,6 +120,15 @@ function ListaPedidosAdmin() {
               ).length
             }
           </span>
+        </div>
+        <div className="flex items-center justify-end mb-4 gap-1">
+          <button
+            onClick={() => navigate("/admin/pedidos/crear-pedido")}
+            className="px-8 py-3 rounded-lg text-white font-semibold text-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: "#163269" }}
+          >
+            Nuevo Pedido
+          </button>
         </div>
 
         {error && (
