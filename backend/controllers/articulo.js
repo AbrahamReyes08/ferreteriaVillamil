@@ -51,10 +51,16 @@ const nuevoArticulo = async (request, response) => {
 const editArticulo = async (request, response) => {
     try{
         const data = request.body;
-        if (!checkForNull(data, response)) return;
+        if (!data || Object.keys(data).length === 0) {
+            res.status(400).json({
+                status: "Error",
+                message: "Request body cannot be empty"
+            });
+            return false;
+        };
 
         const articulo = await Articulo.findOne({
-            where : { codigo: data.codigo }
+            where : { codigo: request.params.codigo }
         });
 
         if (articulo){

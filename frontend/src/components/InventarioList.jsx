@@ -237,7 +237,7 @@ function InventarioList() {
                 onGuardar={async (articuloActualizado) => {
                     await axios.put(
                         `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
-                        { estado: articuloActualizado.estado , codigo: articuloActualizado.codigo}
+                        { estado: articuloActualizado.estado}
                     );
                     fetchArticulos();
                 }}
@@ -249,7 +249,7 @@ function InventarioList() {
                 onGuardar={async (articuloActualizado) => {
                     await axios.put(
                         `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
-                        { cantidad_existencia: articuloActualizado.cantidad_existencia , codigo: articuloActualizado.codigo}
+                        { cantidad_existencia: articuloActualizado.cantidad_existencia}
                     );
                     fetchArticulos();
                 }}
