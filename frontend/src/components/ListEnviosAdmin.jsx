@@ -2,17 +2,14 @@ import React, { useState, useEffect } from "react";
 import { message } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-//import CancelarEnvioModal from "./CancelarEnvioModal";
+import CancelarEnvioModal from "./CancelarEnvioModal";
 
 function ListEnviosAdmin() {
-  const navigate = useNavigate();
   const [envios, setEnvios] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterValue, setFilterValue] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [repartidores, setRepartidores] = useState([]);
   const [selectedEnvio, setSelectedEnvio] = useState(null);
   
   const handleOpenModal = (envio) => {
@@ -23,34 +20,17 @@ function ListEnviosAdmin() {
   const handleCloseModal = () => {
     setIsModalVisible(false);
     setSelectedEnvio(null);
-  };
-
-  const handleAssignRepartidor = async (repartidorId) => {
-    try {
-      message.success('Repartidor asignado exitosamente');
-      await fetchEnvios();
-    } catch (error) {
-      message.error('Error al asignar repartidor');
-    }
+    fetchEnvios();
   };
 
   useEffect(() => {
     fetchEnvios();
-    fetchRepartidores();
     onChange("Pendiente");
   }, []);
 
   const fetchEnvios = async () => {
     setLoading(true);
     try {
-      // Obtener usuario logueado
-      const usuarioStorage = sessionStorage.getItem("usuario");
-      if (!usuarioStorage) {
-        throw new Error("No hay sesión activa");
-      }
-      const usuario = JSON.parse(usuarioStorage);
-      const repartidorId = usuario.id_usuario;
-
       const response = await axios.get(
         `http://localhost:3000/api/pedidos/getAllPedidos`
       );
@@ -63,24 +43,6 @@ function ListEnviosAdmin() {
       message.error(errorMsg);
     } finally {
       setLoading(false);
-    }
-  };
-
-  //usuarios filtrados por repartidores
-  const fetchRepartidores = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/api/usuarios/usuarios`
-      );
-      
-      const repartidoresActivos = response.data.filter(
-        (usuario) => usuario.rol === "Repartidor" && usuario.estado === "Activo"
-      );
-      
-      setRepartidores(repartidoresActivos);
-    } catch (err) {
-      console.error("Error al cargar repartidores:", err);
-      message.error("Error al cargar repartidores");
     }
   };
 
@@ -180,16 +142,18 @@ function ListEnviosAdmin() {
                       {envio.estado}
                     </span>
 
-                    <button
-                     // onClick={() => handleOpenModal(envio)}
-                      className="px-5 py-1 text-white font-medium"
-                      title="Cancelar envio"
-                    >
-                      <CloseCircleOutlined
-                        className="text-2xl"
-                        style={{ color: "#163269" }}
-                      />
-                    </button>
+                    {envio.estado !== "Cancelado" && (
+                      <button
+                        onClick={() => handleOpenModal(envio)}
+                        className="px-5 py-1 text-white font-medium"
+                        title="Cancelar envio"
+                      >
+                        <CloseCircleOutlined
+                          className="text-2xl"
+                          style={{ color: "#163269" }}
+                        />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -198,13 +162,11 @@ function ListEnviosAdmin() {
         )}
       </div>
 
-      {/* <AsignarRepartidorModal
+      <CancelarEnvioModal
         isOpen={isModalVisible}
         onClose={handleCloseModal}
-        onAssign={handleAssignRepartidor}
-        repartidores={repartidores}
-        envioId={selectedEnvio?.id_pedido}
-      /> */}
+        pedidoId={selectedEnvio?.id_pedido}
+      />
     </div>
   );
 }

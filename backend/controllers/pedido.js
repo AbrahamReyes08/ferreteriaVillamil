@@ -274,6 +274,31 @@ const getPedidoById = async (request, response) => {
   };
 };
 
+const cancelarEnvio = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const pedido = await Pedido.findByPk(id);
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+    await pedido.update({ estado: "Cancelado" });
+    return response.status(200).json({
+      status: "success",
+      message: "Pedido cancelado correctamente",
+    });
+  } catch (error) {
+    console.error("Error en cancelarEnvio:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
@@ -284,5 +309,6 @@ module.exports = {
   validarCodigoEntregado,
   getPedidosByRepartidor,
   getPedidosActivosByRepartidor,
-  asignarRepartidor
+  asignarRepartidor,
+  cancelarEnvio
 };
