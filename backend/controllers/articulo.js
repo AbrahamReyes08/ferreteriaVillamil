@@ -102,7 +102,10 @@ const lowStockItems = async (request, response) => {
 
 const getAllItems = async (request, response) => {
     try {
-        const items = await Articulo.findAll();
+        const items = await Articulo.findAll({
+        order: [
+            ['id_articulo', 'ASC'] 
+        ]});
 
         return response.status(200).json({
             status: "Success",
