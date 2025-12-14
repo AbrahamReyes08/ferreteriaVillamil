@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { message, Cascader } from "antd";
-import { FilterOutlined } from "@ant-design/icons";
+import { message } from "antd";
+import { SelectOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -11,38 +11,10 @@ function ListaPedidosAdmin() {
   const [error, setError] = useState("");
   const [filterValue, setFilterValue] = useState(null);
 
-  const options = [
-    {
-      value: "Estado",
-      label: "Estado de Pedido",
-      children: [
-        {
-          value: "Entregado",
-          label: "Entregado",
-        },
-        {
-          value: "En Transcurso",
-          label: "En Transcurso",
-        },
-        {
-          value: "Pendiente",
-          label: "Pendiente",
-        },
-        {
-          value: "Cancelado",
-          label: "Cancelado",
-        },
-        {
-          value: "Asignado",
-          label: "Asignado",
-        },
-      ],
-    },
-  ];
-
   // Cargar pedidos al montar el componente
   useEffect(() => {
     fetchPedidos();
+    onChange("Pendiente");
   }, []);
 
   const fetchPedidos = async () => {
@@ -80,7 +52,7 @@ function ListaPedidosAdmin() {
   };
 
   const onChange = (value) => {
-    setFilterValue(value && value.length ? value[value.length - 1] : null);
+    setFilterValue("Pendiente");
   };
 
   return (
@@ -99,29 +71,13 @@ function ListaPedidosAdmin() {
           </h1>
 
           <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
-            Total de pedidos:{" "}
+            Total de pedidos pendientes de asignar:{" "}
             {
               (filterValue
                 ? pedidos.filter((p) => p.estado === filterValue)
                 : pedidos
               ).length
             }
-          </span>
-        </div>
-        <div className="flex items-center justify-end mb-1 gap-1">
-          <span
-            className="text-xl pb-4 flex items-center gap-2 cursor-pointer"
-            style={{ color: "#163269" }}
-          >
-            <Cascader
-              options={options}
-              onChange={onChange}
-              placeholder={
-                <span className="flex items-center gap-2">
-                  <FilterOutlined /> Filtrar
-                </span>
-              }
-            />
           </span>
         </div>
 
@@ -153,7 +109,7 @@ function ListaPedidosAdmin() {
                 key={pedido.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
-                <div className="p-6 flex items-end justify-between">
+                <div className="p-6 flex justify-between">
                   <div className="space-y-2">
                     <p className="text-base" style={{ color: "#163269" }}>
                       Cliente: {pedido.cliente_nombre}
@@ -172,14 +128,26 @@ function ListaPedidosAdmin() {
                     </p>
                   </div>
 
-                  <span
-                    className="px-6 py-1 rounded-full text-white font-medium shadow-lg self-start"
-                    style={{
-                      backgroundColor: handleEstadoColor(pedido.estado),
-                    }}
-                  >
-                    {pedido.estado}
-                  </span>
+                  <div className="flex flex-col justify-between items-end">
+                    <span
+                      className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
+                      style={{
+                        backgroundColor: handleEstadoColor(pedido.estado),
+                      }}
+                    >
+                      {pedido.estado}
+                    </span>
+
+                    <button
+                      className="px-6 py-1 text-white font-medium"
+                      title="Asignar repartidor"
+                    >
+                      <SelectOutlined
+                        className="text-2xl"
+                        style={{ color: "#163269" }}
+                      />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
