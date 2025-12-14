@@ -3,6 +3,7 @@ import { message } from "antd";
 import { SelectOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import AsignarRepartidorModal from "./AsignarRepartidorModal";
 
 function ListaPedidosAdmin() {
   const navigate = useNavigate();
@@ -10,10 +11,32 @@ function ListaPedidosAdmin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterValue, setFilterValue] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [repartidores, setRepartidores] = useState([]);
+  const [selectedPedido, setSelectedPedido] = useState(null);
+  
+  const handleOpenModal = (pedido) => {
+    setSelectedPedido(pedido);
+    setIsModalVisible(true);
+  };
 
-  // Cargar pedidos al montar el componente
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+    setSelectedPedido(null);
+  };
+
+  const handleAssignRepartidor = async (repartidorId) => {
+    try {
+      message.success('Repartidor asignado exitosamente');
+      await fetchPedidos();
+    } catch (error) {
+      message.error('Error al asignar repartidor');
+    }
+  };
+
   useEffect(() => {
     fetchPedidos();
+    fetchRepartidores();
     onChange("Pendiente");
   }, []);
 
@@ -40,6 +63,24 @@ function ListaPedidosAdmin() {
       message.error(errorMsg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRepartidores = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/usuarios/usuarios`
+      );
+      
+      // Filtrar solo los usuarios con rol "Repartidor" y estado "Activo"
+      const repartidoresActivos = response.data.filter(
+        (usuario) => usuario.rol === "Repartidor" && usuario.estado === "Activo"
+      );
+      
+      setRepartidores(repartidoresActivos);
+    } catch (err) {
+      console.error("Error al cargar repartidores:", err);
+      message.error("Error al cargar repartidores");
     }
   };
 
@@ -139,6 +180,7 @@ function ListaPedidosAdmin() {
                     </span>
 
                     <button
+                      onClick={() => handleOpenModal(pedido)}
                       className="px-5 py-1 text-white font-medium"
                       title="Asignar repartidor"
                     >
@@ -154,6 +196,15 @@ function ListaPedidosAdmin() {
           </div>
         )}
       </div>
+
+      {/* Modal para asignar repartidor */}
+      <AsignarRepartidorModal
+        isOpen={isModalVisible}
+        onClose={handleCloseModal}
+        onAssign={handleAssignRepartidor}
+        repartidores={repartidores}
+        pedidoId={selectedPedido?.id_pedido}
+      />
     </div>
   );
 }

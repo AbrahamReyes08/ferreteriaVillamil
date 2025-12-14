@@ -105,6 +105,35 @@ const updatePedido = async (request, response) => {
   }
 };
 
+const asignarRepartidor = async (request, response) => {
+  const { id } = request.params;
+  const { id_repartidor } = request.body;
+  try {
+    const pedido = await Pedido.findByPk(id);
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+    await pedido.update({ id_repartidor_asignado: id_repartidor });
+    await pedido.update({ estado: "Asignado" });
+    await pedido.update({ fecha_asignacion: new Date() });
+    
+    return response.status(200).json({
+      status: "success",
+      message: "Repartidor asignado correctamente",
+    });
+  } catch (error) {
+    console.error("Error en asignarRepartidor:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 const generarCodigo = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -255,4 +284,5 @@ module.exports = {
   validarCodigoEntregado,
   getPedidosByRepartidor,
   getPedidosActivosByRepartidor,
+  asignarRepartidor
 };
