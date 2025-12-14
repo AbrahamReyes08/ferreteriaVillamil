@@ -67,8 +67,14 @@ function NuevoPedidoForm() {
         setLoading(true);
 
         try {
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/newPedido`, {...form, numero_pedido: "PED"});
+            
+            const id_pedido= response.data.data.id_pedido;
+            const idFormat = String(id_pedido).padStart(3, '0');
+            const numeroPedidoNew = `PED${idFormat}`;
 
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/newPedido`, form);
+            await axios.put(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/updatePedido/${id_pedido}`, {numero_pedido: numeroPedidoNew});
+
             message.success('Pedido creado exitosamente');
             setForm({
                 numero_pedido: "",
@@ -83,7 +89,6 @@ function NuevoPedidoForm() {
                 observacion: "",
             });
             
-            const id_pedido= response.data.data.id_pedido
             const detallesConPedido = detalles.map(({ nombre, ...det }) => ({
                 ...det,
                 id_pedido
@@ -167,27 +172,6 @@ function NuevoPedidoForm() {
                     <h1 className="text-3xl font-bold pb-4 border-b-4 flex-1" style={{ color: '#163269', borderColor: '#163269' }}>
                         Nuevo Pedido
                     </h1>
-                </div>
-
-                {/* Código*/}
-                <div className="flex gap-5 mb-4">
-                    <div className="flex-1">
-                        <label className="block font-semibold mb-2" style={{ color: '#163269' }}>
-                            Número de pedido:
-                        </label>
-                        <input
-                            name = "numero_pedido"
-                            type="text"
-                            value={form.numero_pedido}
-                            onChange={handleChange}
-                            placeholder="Ingresa el número de pedido"
-                            className="w-1/2 px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:bg-white transition-colors"
-                            style={{ focusBorderColor: '#163269' }}
-                            required
-                            onInvalid={(e) => e.target.setCustomValidity('Por favor ingresa el codigo')}
-                            onInput={(e) => e.target.setCustomValidity('')}
-                            />
-                    </div>
                 </div>
 
                 {/* Nombre y teléfono*/}
