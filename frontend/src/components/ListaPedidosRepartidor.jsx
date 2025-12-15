@@ -105,21 +105,21 @@ function ListaPedidosRepartidor() {
   };
 
   return (
-    <div className="w-full">
-      <div className="max-w-5xl">
+    <div className="w-full p-4 md:p-6">
+      <div className="max-w-5xl mx-auto">
         {/* Header (page) */}
         <div
-          className="flex items-center justify-between mb-5 border-b-4"
+          className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 border-b-4 gap-4"
           style={{ borderColor: "#163269" }}
         >
           <h1
-            className="text-3xl font-bold pb-4 flex-1"
+            className="text-2xl sm:text-3xl font-bold pb-4"
             style={{ color: "#163269" }}
           >
             Lista de Pedidos
           </h1>
           <span
-            className="text-xl font-bold pb-4 "
+            className="text-lg sm:text-xl font-bold pb-4"
             style={{ color: "#163269" }}
           >
             Total de pedidos:{" "}
@@ -131,9 +131,9 @@ function ListaPedidosRepartidor() {
             }
           </span>
         </div>
-        <div className="flex items-center justify-end mb-1 gap-1">
+        <div className="flex items-center justify-end mb-4 gap-2">
           <span
-            className="text-xl pb-4 flex items-center gap-2 cursor-pointer"
+            className="text-lg sm:text-xl flex items-center gap-2"
             style={{ color: "#163269" }}
           >
             <Cascader
@@ -176,27 +176,27 @@ function ListaPedidosRepartidor() {
                 key={pedido.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
-                <div className="p-6 flex items-end justify-between">
-                  <div className="space-y-2">
-                    <p className="text-base" style={{ color: "#163269" }}>
+                <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                  <div className="space-y-2 flex-1">
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Cliente: {pedido.cliente_nombre}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       {pedido.direccion_entrega}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Costo total: L.{pedido.total}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Fecha de creación:{" "}
                       {new Date(pedido.fecha_creacion).toLocaleDateString(
                         "es-HN"
                       )}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
+                  <div className="flex flex-col sm:items-end gap-2">
                     <span
-                      className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
+                      className="px-4 sm:px-6 py-1 rounded-full text-white font-medium shadow-lg text-sm sm:text-base"
                       style={{
                         backgroundColor: handleEstadoColor(pedido.estado),
                       }}
@@ -205,7 +205,7 @@ function ListaPedidosRepartidor() {
                     </span>
                     <button
                       onClick={() => handleVerDetalles(pedido)}
-                      className="px-3 py-1 text-white font-medium text-sm rounded"
+                      className="px-3 py-1 text-white font-medium text-xs sm:text-sm rounded"
                       title="Ver detalles del pedido"
                       style={{ backgroundColor: "#163269" }}
                     >
