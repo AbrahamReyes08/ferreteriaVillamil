@@ -24,20 +24,8 @@ function ListaPedidosRepartidor() {
           label: "Entregado",
         },
         {
-          value: "En Transcurso",
-          label: "En Transcurso",
-        },
-        {
-          value: "Pendiente",
-          label: "Pendiente",
-        },
-        {
           value: "Cancelado",
           label: "Cancelado",
-        },
-        {
-          value: "Asignado",
-          label: "Asignado",
         },
       ],
     },
@@ -67,7 +55,7 @@ function ListaPedidosRepartidor() {
       );
 
       const pedidosData = response.data.data || response.data;
-      setPedidos(pedidosData);
+      setPedidos(pedidosData.filter((p) => p.estado === "Entregado" || p.estado === "Cancelado"));
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Error al cargar pedidos";
       setError(errorMsg);
