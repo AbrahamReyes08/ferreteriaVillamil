@@ -3,6 +3,7 @@ import { message } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import CancelarEnvioModal from "./CancelarEnvioModal";
+import DetallePedidoModal from "./DetallePedidoModal";
 
 function ListEnviosAdmin() {
   const [envios, setEnvios] = useState([]);
@@ -11,6 +12,7 @@ function ListEnviosAdmin() {
   const [filterValue, setFilterValue] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedEnvio, setSelectedEnvio] = useState(null);
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
   
   const handleOpenModal = (envio) => {
     setSelectedEnvio(envio);
@@ -21,6 +23,16 @@ function ListEnviosAdmin() {
     setIsModalVisible(false);
     setSelectedEnvio(null);
     fetchEnvios();
+  };
+
+  const handleVerDetalles = (envio) => {
+    setSelectedEnvio(envio);
+    setShowDetalleModal(true);
+  };
+
+  const handleCloseDetalleModal = () => {
+    setShowDetalleModal(false);
+    setSelectedEnvio(null);
   };
 
   useEffect(() => {
@@ -59,22 +71,21 @@ function ListEnviosAdmin() {
   };
 
   return (
-    console.log("hola"),
-    <div className="w-full">
-      <div className="max-w-5xl">
+    <div className="w-full p-4 md:p-6">
+      <div className="max-w-5xl mx-auto">
         {/* Header (page) */}
         <div
-          className="flex items-center justify-between mb-5 border-b-4 gap-4"
+          className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 border-b-4 gap-4"
           style={{ borderColor: "#163269" }}
         >
           <h1
-            className="text-3xl font-bold pb-4 flex-1"
+            className="text-2xl sm:text-3xl font-bold pb-4"
             style={{ color: "#163269" }}
           >
             Lista de Envios
           </h1>
 
-          <span className="text-xl font-bold pb-4" style={{ color: "#163269" }}>
+          <span className="text-lg sm:text-xl font-bold pb-4" style={{ color: "#163269" }}>
             Total de envios:{" "}
             {
               (filterValue
@@ -113,18 +124,18 @@ function ListEnviosAdmin() {
                 key={envio.id_pedido}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
-                <div className="p-6 flex justify-between">
-                  <div className="space-y-2">
-                    <p className="text-base" style={{ color: "#163269" }}>
+                <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:justify-between gap-4">
+                  <div className="space-y-2 flex-1">
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Cliente: {envio.cliente_nombre}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       {envio.direccion_entrega}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Costo total: L.{envio.total}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       Fecha de creación:{" "}
                       {new Date(envio.fecha_creacion).toLocaleDateString(
                         "es-HN"
@@ -132,9 +143,9 @@ function ListEnviosAdmin() {
                     </p>
                   </div>
 
-                  <div className="flex flex-col justify-between items-end">
+                  <div className="flex flex-col justify-between items-end gap-2">
                     <span
-                      className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
+                      className="px-4 sm:px-6 py-1 rounded-full text-white font-medium shadow-lg text-sm sm:text-base"
                       style={{
                         backgroundColor: handleEstadoColor(envio.estado),
                       }}
@@ -142,18 +153,29 @@ function ListEnviosAdmin() {
                       {envio.estado}
                     </span>
 
-                    {envio.estado !== "Cancelado" && (
+                    <div className="flex gap-2">
                       <button
-                        onClick={() => handleOpenModal(envio)}
-                        className="px-5 py-1 text-white font-medium"
-                        title="Cancelar envio"
+                        onClick={() => handleVerDetalles(envio)}
+                        className="px-3 py-1 text-white font-medium text-xs sm:text-sm rounded"
+                        title="Ver detalles del envío"
+                        style={{ backgroundColor: "#163269" }}
                       >
-                        <CloseCircleOutlined
-                          className="text-2xl"
-                          style={{ color: "#163269" }}
-                        />
+                        Ver Detalles
                       </button>
-                    )}
+                      
+                      {envio.estado !== "Cancelado" && envio.estado !== "Entregado" && (
+                        <button
+                          onClick={() => handleOpenModal(envio)}
+                          className="px-3 py-1 text-white font-medium"
+                          title="Cancelar envio"
+                        >
+                          <CloseCircleOutlined
+                            className="text-lg sm:text-2xl"
+                            style={{ color: "#163269" }}
+                          />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -161,12 +183,19 @@ function ListEnviosAdmin() {
           </div>
         )}
       </div>
-
+        
       <CancelarEnvioModal
         isOpen={isModalVisible}
         onClose={handleCloseModal}
         pedidoId={selectedEnvio?.id_pedido}
       />
+
+      {showDetalleModal && selectedEnvio && (
+        <DetallePedidoModal 
+          pedidoId={selectedEnvio.id_pedido || selectedEnvio.id}
+          onClose={handleCloseDetalleModal}
+        />
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import LoginForm from "./components/LoginForm.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CrearUsuario from "./components/CrearUsuario.jsx";
 import UserListAdmin from "./components/UserListAdmin.jsx";
-import PedidoCardRepartidor from "./components/PedidoCardRepartidor.jsx";
+import DashboardRepartidor from "./components/DashboardRepartidor.jsx";
 import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
 import NuevoArticuloForm from "./components/ItemForm.jsx";
 import InventarioList from "./components/InventarioList.jsx";
@@ -13,6 +13,8 @@ import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
 import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
 import DashboardAdmin from "./components/DashboardAdmin.jsx";
+import PerfilRepartidor from "./components/PerfilRepartidor.jsx";
+import PerfilAdmin from "./components/PerfilAdmin.jsx";
 
 function App() {
   return (
@@ -39,6 +41,7 @@ function App() {
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
           <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
           <Route path="envios" element={<ListEnviosAdmin />} />
+          <Route path="perfil" element={<PerfilAdmin />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}
@@ -50,12 +53,9 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route
-            index
-            element={<h1 className="text-3xl">Panel Repartidor</h1>}
-          />
-          <Route path="pedido/:id" element={<PedidoCardRepartidor />} />
+          <Route index element={<DashboardRepartidor />} />
           <Route path="pedidos" element={<ListaPedidosRepartidor />} />
+          <Route path="perfil-repartidor" element={<PerfilRepartidor />} />
         </Route>
       </Routes>
     </BrowserRouter>

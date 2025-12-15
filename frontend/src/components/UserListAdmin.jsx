@@ -102,12 +102,12 @@ function UserListAdmin() {
   };
 
   return (
-    <div className="w-full">
-      <div className="max-w-5xl">
+    <div className="w-full p-4 md:p-6">
+      <div className="max-w-5xl mx-auto">
         {/* Header (page) */}
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-5 gap-4">
           <h1
-            className="text-3xl font-bold pb-4 border-b-4 flex-1"
+            className="text-2xl sm:text-3xl font-bold pb-4 border-b-4"
             style={{ color: "#163269", borderColor: "#163269" }}
           >
             Lista de Usuarios
@@ -121,23 +121,33 @@ function UserListAdmin() {
         )}
 
         {/* Estadísticas usuarios */}
-        <div className="grid grid-cols-3 gap-16 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <p className="text-lg font-semibold" style={{ color: "#163269" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <p className="text-base sm:text-lg font-semibold" style={{ color: "#163269" }}>
               Total Usuarios: <span className="ml-2">{totalUsuarios}</span>
             </p>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <p className="text-lg font-semibold" style={{ color: "#163269" }}>
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <p className="text-base sm:text-lg font-semibold" style={{ color: "#163269" }}>
               Usuarios Activos: <span className="ml-2">{usuariosActivos}</span>
             </p>
           </div>
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <p className="text-lg font-semibold" style={{ color: "#163269" }}>
+          <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6">
+            <p className="text-base sm:text-lg font-semibold" style={{ color: "#163269" }}>
               Usuarios Inactivos:{" "}
               <span className="ml-2">{usuariosInactivos}</span>
             </p>
           </div>
+        </div>
+
+        <div className="flex items-center justify-end mb-4 gap-1">
+          <button
+            onClick={handleNuevoUsuario}
+            className="px-8 py-3 rounded-lg text-white font-semibold text-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: "#163269" }}
+          >
+            Nuevo Usuario
+          </button>
         </div>
 
         {/* Lista */}
@@ -155,22 +165,22 @@ function UserListAdmin() {
                 className="bg-white rounded-2xl shadow-lg overflow-hidden"
               >
                 {/* Header (card) */}
-                <div className="flex items-center justify-between p-6 bg-[#E6E6E6] rounded-2xl shadow-lg">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 bg-[#E6E6E6] rounded-2xl shadow-lg gap-4">
                   <div className="flex items-center gap-4">
                     <Avatar
-                      size={64}
+                      size={{ xs: 48, sm: 56, md: 64 }}
                       icon={<UserOutlined />}
                       style={{ backgroundColor: "#808080" }}
                     />
                     <h3
-                      className="text-xl font-semibold"
+                      className="text-lg sm:text-xl font-semibold"
                       style={{ color: "#163269" }}
                     >
                       {usuario.nombre}
                     </h3>
                   </div>
                   <span
-                    className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
+                    className="px-4 sm:px-6 py-1 rounded-full text-white font-medium shadow-lg text-sm sm:text-base"
                     style={{
                       backgroundColor:
                         usuario.estado === "Activo" ? "#5DADE2" : "#BC7D3B",
@@ -180,23 +190,23 @@ function UserListAdmin() {
                   </span>
                 </div>
 
-                <div className="p-6 flex items-end justify-between">
-                  <div className="space-y-2">
-                    <p className="text-base" style={{ color: "#163269" }}>
+                <div className="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                  <div className="space-y-2 flex-1">
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       {usuario.telefono}
                     </p>
-                    <p className="text-base" style={{ color: "#163269" }}>
+                    <p className="text-sm sm:text-base" style={{ color: "#163269" }}>
                       {usuario.correo}
                     </p>
                     <p
-                      className="text-base font-medium"
+                      className="text-sm sm:text-base font-medium"
                       style={{ color: "#163269" }}
                     >
                       {usuario.rol}
                     </p>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-2 sm:gap-3">
                     <button
                       onClick={() => handleEditUsuario(usuario)}
                       className="p-3 rounded-lg transition-colors hover:bg-gray-100"
@@ -238,15 +248,7 @@ function UserListAdmin() {
           </div>
         )}
 
-        <div className="flex justify-end mt-8">
-          <button
-            onClick={handleNuevoUsuario}
-            className="px-8 py-3 rounded-lg text-white font-semibold text-lg transition-colors hover:opacity-90"
-            style={{ backgroundColor: "#163269" }}
-          >
-            Nuevo Usuario
-          </button>
-        </div>
+        
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import {
   FaUser,
   FaSignOutAlt,
   FaHistory,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -24,12 +26,26 @@ export function SidebarRepartidor() {
   const location = useLocation();
   const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const usuarioData = sessionStorage.getItem("usuario");
     if (usuarioData) {
       setUserData(JSON.parse(usuarioData));
     }
+
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setIsCollapsed(true);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleLogout = () => {
@@ -41,93 +57,132 @@ export function SidebarRepartidor() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="w-72 bg-white h-screen flex flex-col border-r shadow-lg">
-      <div className="p-6 border-b border-[#E6E6E6]">
-        <div className="flex items-center justify-center gap-2">
-          <img
-            src={logo}
-            alt="Ferretería Villamil Logo"
-            className="w-32 h-32 object-contain"
-          />
-        </div>
-      </div>
-
-      {/*Menu */}
-      <nav className="flex-1 py-8">
-        <Link
-          to="/dashboard"
-          className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/dashboard") ? "text-[#BC7D3B]" : "text-[#163269]"
-          }`}
+    <>
+      {/* Mobile menu button */}
+      {isMobile && (
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="fixed top-4 left-4 z-50 p-3 bg-[#163269] text-white rounded-lg shadow-lg md:hidden"
         >
-          <FaHome className="w-6 h-6" />
-          <span
-            className={`text-lg font-semibold ${
-              !isActive("/dashboard") && "underline"
-            }`}
-          >
-            Dashboard
-          </span>
-        </Link>
-
-        <Link
-          to="/repartidor/pedidos"
-          className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/repartidor/pedidos")
-              ? "text-[#BC7D3B]"
-              : "text-[#163269]"
-          }`}
-        >
-          <FaHistory className="w-6 h-6" />
-          <span
-            className={`text-lg font-semibold ${
-              !isActive("/repartidor/pedidos") && "underline"
-            }`}
-          >
-            Historial
-          </span>
-        </Link>
-
-        <Link
-          to="/perfil"
-          className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/perfil") ? "text-[#BC7D3B]" : "text-[#163269]"
-          }`}
-        >
-          <FaUser className="w-6 h-6" />
-          <span
-            className={`text-lg font-semibold ${
-              !isActive("/perfil") && "underline"
-            }`}
-          >
-            Perfil
-          </span>
-        </Link>
-      </nav>
-
-      {/*User Profile*/}
-      <div className="p-6 bg-[#E6E6E6] border-t border-[#B8B8B8]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">
-              <FaUser className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <div className="font-semibold text-black">Bienvenido</div>
-              <div className="text-[#163269]">
-                {userData?.nombre || "Usuario"}
-              </div>
-            </div>
+          {isCollapsed ? <FaBars className="w-5 h-5" /> : <FaTimes className="w-5 h-5" />}
+        </button>
+      )}
+      
+      {/* Overlay for mobile */}
+      {isMobile && !isCollapsed && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setIsCollapsed(true)}
+        />
+      )}
+      
+      <div className={`fixed left-0 top-0 h-screen bg-white flex flex-col border-r shadow-lg transition-all duration-300 z-50 ${
+        isCollapsed ? (isMobile ? '-translate-x-full' : 'w-20') : 'w-72'
+      }`}>
+        {/* Header */}
+        <div className="p-6 border-b border-[#E6E6E6]">
+          <div className="flex items-center justify-center gap-2">
+            <img
+              src={logo}
+              alt="Ferretería Villamil Logo"
+              className={`${isCollapsed ? 'w-12 h-12' : 'w-32 h-32'} object-contain transition-all duration-300`}
+            />
           </div>
-          <button
-            onClick={handleLogout}
-            className="p-2 hover:bg-red-100 rounded-full transition-colors group"
-            title="Cerrar sesión"
+          {!isMobile && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className="absolute top-6 right-2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              {isCollapsed ? <FaBars className="w-4 h-4 text-[#163269]" /> : <FaTimes className="w-4 h-4 text-[#163269]" />}
+            </button>
+          )}
+        </div>
+
+        {/*Menu */}
+        <nav className="flex-1 py-8">
+          <Link
+            to="/repartidor"
+            className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
+              isActive("/repartidor") ? "text-[#BC7D3B]" : "text-[#163269]"
+            }`}
           >
-            <FaSignOutAlt className="w-5 h-5 text-red-600 group-hover:text-red-700" />
-          </button>
+            <FaHome className="w-6 h-6 flex-shrink-0" />
+            {!isCollapsed && (
+              <span
+                className={`text-lg font-semibold ${
+                  !isActive("/repartidor") && "underline"
+                }`}
+              >
+                Dashboard
+              </span>
+            )}
+          </Link>
+
+          <Link
+            to="/repartidor/pedidos"
+            className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
+              isActive("/repartidor/pedidos")
+                ? "text-[#BC7D3B]"
+                : "text-[#163269]"
+            }`}
+          >
+            <FaHistory className="w-6 h-6 flex-shrink-0" />
+            {!isCollapsed && (
+              <span
+                className={`text-lg font-semibold ${
+                  !isActive("/repartidor/pedidos") && "underline"
+                }`}
+              >
+                Historial
+              </span>
+            )}
+          </Link>
+
+          <Link
+            to="/repartidor/perfil-repartidor"
+            className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
+              isActive("/repartidor/perfil-repartidor") ? "text-[#BC7D3B]" : "text-[#163269]"
+            }`}
+          >
+            <FaUser className="w-6 h-6 flex-shrink-0" />
+            {!isCollapsed && (
+              <span
+                className={`text-lg font-semibold ${
+                  !isActive("/repartidor/perfil-repartidor") && "underline"
+                }`}
+              >
+                Perfil
+              </span>
+            )}
+          </Link>
+        </nav>
+
+        {/*User Profile*/}
+        <div className="p-6 bg-[#E6E6E6] border-t border-[#B8B8B8]">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">
+                <FaUser className="w-8 h-8 text-white" />
+              </div>
+              {!isCollapsed && (
+                <div>
+                  <div className="font-semibold text-black">Bienvenido</div>
+                  <div className="text-[#163269]">
+                    {userData?.nombre || "Usuario"}
+                  </div>
+                </div>
+              )}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-2 hover:bg-red-100 rounded-full transition-colors group"
+              title="Cerrar sesión"
+            >
+              <FaSignOutAlt className="w-5 h-5 text-red-600 group-hover:text-red-700" />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
