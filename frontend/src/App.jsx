@@ -13,6 +13,7 @@ import InventarioList from "./components/InventarioList.jsx";
 import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
 import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
+import PerfilRepartidor from "./components/PerfilRepartidor.jsx";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route index element={<DashboardRepartidor />} />
           <Route path="pedido/:id" element={<PedidoCardRepartidor />} />
           <Route path="pedidos" element={<ListaPedidosRepartidor />} />
+          <Route path="perfil-repartidor" element={<PerfilRepartidor />} />
         </Route>
       </Routes>
     </BrowserRouter>
