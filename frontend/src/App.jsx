@@ -14,6 +14,7 @@ import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
 import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
 import PerfilRepartidor from "./components/PerfilRepartidor.jsx";
+import PerfilAdmin from "./components/PerfilAdmin.jsx";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
           <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />
           <Route path="envios" element={<ListEnviosAdmin />} />
+          <Route path="perfil" element={<PerfilAdmin />} />
         </Route>
 
         {/* Páginas que llevan sidebar del repartidor - PROTEGIDAS */}
