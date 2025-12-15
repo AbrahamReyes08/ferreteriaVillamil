@@ -107,22 +107,16 @@ export function SidebarAdmin() {
             isActive("/admin/dashboard") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
-          <FaHome className="w-6 h-6" />
-          <span
-            className={`text-lg font-semibold ${
-              !isActive("/admin/dashboard") && "underline"
-            }`}
-          >
-            <FaHome className="w-6 h-6 flex-shrink-0" />
-            {!isCollapsed && (
-              <span
-                className={`text-lg font-semibold ${
-                  !isActive("/dashboard") && "underline"
-                }`}
-              >
-                Dashboard
-              </span>
-            )}
+          <FaHome className="w-6 h-6 flex-shrink-0" />
+          {!isCollapsed && (
+            <span
+              className={`text-lg font-semibold ${
+                !isActive("/dashboard") && "underline"
+              }`}
+            >
+              Dashboard
+            </span>
+          )}
           </Link>
 
           <Link 
