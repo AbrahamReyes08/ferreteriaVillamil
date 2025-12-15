@@ -163,7 +163,7 @@ function ListEnviosAdmin() {
                         Ver Detalles
                       </button>
                       
-                      {envio.estado !== "Cancelado" && (
+                      {envio.estado !== "Cancelado" && envio.estado !== "Entregado" && (
                         <button
                           onClick={() => handleOpenModal(envio)}
                           className="px-3 py-1 text-white font-medium"
@@ -183,7 +183,7 @@ function ListEnviosAdmin() {
           </div>
         )}
       </div>
-
+        
       <CancelarEnvioModal
         isOpen={isModalVisible}
         onClose={handleCloseModal}
