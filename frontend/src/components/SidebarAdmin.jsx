@@ -137,7 +137,10 @@ export function SidebarAdmin() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">
-              <FaUser className="w-8 h-8 text-white" />
+              <FaUser 
+              onClick={() => navigate('/admin/perfil')} 
+              className="w-8 h-8 text-black cursor-pointer hover:text-[#BC7D3B]" 
+              />
             </div>
             <div>
               <div className="font-semibold text-black">Bienvenido</div>
