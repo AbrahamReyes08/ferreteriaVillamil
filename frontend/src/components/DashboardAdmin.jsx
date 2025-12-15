@@ -26,6 +26,7 @@ function Card({ title, color, children }) {
 }
 
 function DashboardAdmin() {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [repartidores, setRepartidores] = useState([]);
     const [popular, setPopular] = useState([]);
     const [bajoInv, setBajoInv] = useState([]);
@@ -35,65 +36,129 @@ function DashboardAdmin() {
         ingresos_brut: 0.0,
         utilidad: 0.0
     });
-    const [pedidosChart, setPedidosChart] = useState([])
+    const [rawData, setRawData] = useState({
+        pedidos: [],
+        detalles: [],
+        articulos: [],
+        calificaciones: [],
+        usuarios: []
+    });
+    const [pedidosChart, setPedidosChart] = useState([]);
+    const [periodo, setPeriodo] = useState("mes"); 
     const COLORS = [
         "#ECB01F",
         "#163269",
         "#2C4D8E",
         "#5E9C08",
-        "#BC7D3B",
-        
+        "#BC7D3B" 
     ]
+    const now = new Date();
+
+    const filtrarPorPeriodo = (fechaStr) => {
+        const fecha = new Date(fechaStr);
+
+        if (periodo === "semana") {
+            const inicioSemana = new Date(now);
+            inicioSemana.setDate(now.getDate() - now.getDay());
+            return fecha >= inicioSemana;
+        }
+
+        if (periodo === "mes") {
+            return (
+                fecha.getMonth() === now.getMonth() &&
+                fecha.getFullYear() === now.getFullYear()
+            );
+        }
+
+        if (periodo === "anio") {
+            return fecha.getFullYear() === now.getFullYear();
+        }
+
+        return true;
+    };
     
     useEffect(() => {
         fetchDashboardData();
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
+
+    useEffect(() => {
+        if (rawData.pedidos.length > 0) {
+            filter();
+        }
+    }, [rawData, periodo]);
 
     const fetchDashboardData = async () => {
         try {
-            const now = new Date();
-            await Promise.all([
-            fetchRepartidores(now.getMonth() + 1, now.getFullYear()),
-            fetchMasVendido(),
-            fetchBajoInventario(),
-            ]);
-        } catch (error) {
-            console.error("Error cargando dashboard", error);
-        }
-    };
-
-    const fetchRepartidores = async (mes, anio) => {
-        try {
-            const [calificacionesRes, pedidosRes, usuariosRes, detallesRes, articulosRes] = await Promise.all([
+            const [calificacionesRes, pedidosRes, usuariosRes, detallesRes, articulosRes, lowStockRes] = await Promise.all([
                 axios.get(`${import.meta.env.VITE_SERVER_URL}/calificaciones/list`),
                 axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/getAllPedidos`),
                 axios.get(`${import.meta.env.VITE_SERVER_URL}/usuarios/usuarios`),
                 axios.get(`${import.meta.env.VITE_SERVER_URL}/detalles/list`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/list`)
+                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/list`),
+                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/low-stock`)
             ]);
 
+            const lowStock = lowStockRes.data.data.map((a) => ({
+                id_articulo: a.id_articulo,
+                nombre: a.nombre,
+                existencia: a.cantidad_existencia,
+                minimo: a.stock_minimo
+            }));
+
+            setBajoInv(lowStock);
+
+            setRawData({
+                pedidos: pedidosRes.data.data,
+                detalles: detallesRes.data.data,
+                articulos: articulosRes.data.data,
+                calificaciones: calificacionesRes.data.data,
+                usuarios: usuariosRes.data
+            });
+
+        } catch (err ){
+            console.error("Error obteniendo la data", err);
+        }
+    }
+
+    const filter = () => {
             const calificacionesMap = new Map();
-            calificacionesRes.data.data.forEach(c => {
+            rawData.calificaciones.forEach(c => {
                 calificacionesMap.set(c.id_pedido, c.puntuacion);
             });
 
             const usuariosMap = new Map();
-            usuariosRes.data.forEach(u => {
+            rawData.usuarios.forEach(u => {
                 usuariosMap.set(u.id_usuario, u.nombre);
             });
 
             const detallesMap = new Map();
-            detallesRes.data.data.forEach(d => {
+            rawData.detalles.forEach(d => {
                 if (!detallesMap.has(d.id_pedido)) detallesMap.set(d.id_pedido, []);
                 detallesMap.get(d.id_pedido).push(d);
             });
 
             const articulosMap = new Map();
-            articulosRes.data.data.forEach(a => {
+            rawData.articulos.forEach(a => {
                 articulosMap.set(a.id_articulo, a);
             });
 
-            const estadosCount = pedidosRes.data.data.reduce((acc, p) => {
+            const pedidosMap = new Map();
+            rawData.pedidos.forEach(p => {
+                pedidosMap.set(p.id_pedido, p);
+            });
+
+            // Sección Gráfico
+
+            const pedidosFiltrados = rawData.pedidos.filter(p =>
+                filtrarPorPeriodo(p.fecha_creacion)
+            );
+
+            const estadosCount = pedidosFiltrados.reduce((acc, p) => {
                 acc[p.estado] = (acc[p.estado] || 0) + 1;
                 return acc;
             }, {});
@@ -108,11 +173,11 @@ function DashboardAdmin() {
 
             setPedidosChart(pedidosChartData);
 
-             const pedidosEntregados = pedidosRes.data.data.filter(pedido => {
-                if (pedido.estado !== "Entregado") return false;
-                const fecha = new Date(pedido.fecha_entrega);
-                return fecha.getMonth() + 1 === mes && fecha.getFullYear() === anio;
-            });
+            // Sección Repartidores
+
+            const pedidosEntregados = rawData.pedidos.filter(
+                p => p.estado === "Entregado" && filtrarPorPeriodo(p.fecha_entrega)
+            );
 
             const resumenRepartidores = pedidosEntregados.reduce((acc, item) => {
                 if (!acc[item.id_repartidor_asignado]) {
@@ -145,11 +210,40 @@ function DashboardAdmin() {
             .sort((a,b) => b.promedio - a.promedio);
             setRepartidores(resultadoFinal);
 
+            // Sección más vendido
+            const detallesMapV = new Map();
+            rawData.detalles.forEach(d => {
+                const pedido = pedidosMap.get(d.id_pedido);
+                if (!pedido) return;
+
+                if (!filtrarPorPeriodo(pedido.fecha_creacion)) return;
+
+                if (detallesMapV.has(d.id_articulo)) {
+                    detallesMapV.set(d.id_articulo, detallesMapV.get(d.id_articulo) + d.cantidad);
+                } else {
+                    detallesMapV.set(d.id_articulo, d.cantidad);
+                }
+            });
+
+
+            const masVendidos = Array.from(detallesMapV.entries())
+                .map(([id_articulo, cantidad]) => {
+                    const articulo = articulosMap.get(id_articulo);
+                    return {
+                        id_articulo,
+                        nombre: articulo?.nombre ?? "Desconocido",
+                        cantidad_vendida: cantidad,
+                        inventario_actual: articulo?.cantidad_existencia ?? 0
+                    };
+                })
+                .sort((a, b) => b.cantidad_vendida - a.cantidad_vendida); 
+
+            setPopular(masVendidos);
+
             // Sección de ingresos
             let pedidos_count = pedidosEntregados.length;
             let costo_items = 0;
             let ingresos_brut = 0;
-            console.log(articulosMap)
 
             pedidosEntregados.forEach(pedido => {
                 ingresos_brut += Number(pedido.total) ?? 0;
@@ -172,84 +266,43 @@ function DashboardAdmin() {
             };
 
             setCapitalUtil(resumenIngresos);
-            console.log(resumenIngresos);
-        } catch (err ){
-            console.error("Error cargando repartidores", err);
-        }
-    }
-
-    const fetchMasVendido = async () => {
-        try {
-            const [detallesRes, articulosRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/detalles/list`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/list`),
-            ]);
-            const detallesMap = new Map();
-            detallesRes.data.data.forEach(d => {
-                if (detallesMap.has(d.id_articulo)) {
-                    detallesMap.set(d.id_articulo, detallesMap.get(d.id_articulo) + d.cantidad);
-                } else {
-                    detallesMap.set(d.id_articulo, d.cantidad);
-                }
-            });
-
-            const articulosMap = new Map();
-            articulosRes.data.data.forEach(a => {
-                articulosMap.set(a.id_articulo, a); 
-            });
-
-
-            const masVendidos = Array.from(detallesMap.entries())
-                .map(([id_articulo, cantidad]) => {
-                    const articulo = articulosMap.get(id_articulo);
-                    return {
-                        id_articulo,
-                        nombre: articulo?.nombre ?? "Desconocido",
-                        cantidad_vendida: cantidad,
-                        inventario_actual: articulo?.cantidad_existencia ?? 0
-                    };
-                })
-                .sort((a, b) => b.cantidad_vendida - a.cantidad_vendida); 
-
-            setPopular(masVendidos);
-        } catch (err) {
-            console.error("Error cargando más vendidos", err);
-        }
-    }
-
-    const fetchBajoInventario = async () => {
-        try {
-            const articulosRes = await axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/low-stock`);
-
-            const lowStock = articulosRes.data.data.map((a) => ({
-                id_articulo: a.id_articulo,
-                nombre: a.nombre,
-                existencia: a.cantidad_existencia,
-                minimo: a.stock_minimo
-            }));
-
-            setBajoInv(lowStock);
-        } catch (error) {
-            console.error("Error cargando bajo inventario", error)
-        }
     }
 
     return (
         <div>
             <div className="flex items-center justify-between mb-5">
-            <h1
-                className="text-3xl font-bold pb-4 border-b-4 flex-1"
-                style={{ color: "#163269", borderColor: "#163269" }}
-            >
-                Dashbord
-            </h1>
+                <h1
+                    className="text-3xl font-bold pb-4 border-b-4 flex-1"
+                    style={{ color: "#163269", borderColor: "#163269" }}
+                >
+                    Dashbord
+                </h1>
             </div>
-            
-
+                
+            <div className="flex items-center justify-between gap-5">
+                <div>
+                    <strong>Fecha:</strong>
+                    {now.toLocaleDateString("es-ES", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    })}
+                </div>
+                <select 
+                    value={periodo}
+                    onChange={e => setPeriodo(e.target.value)}
+                    className="border rounded-lg px-3 py-2"
+                >
+                    <option value="semana">Semana</option>
+                    <option value="mes">Mes</option>
+                    <option value="anio">Año</option>
+                </select>
+            </div>
             {/* GRID */}
-            <div className="grid py-3 grid-cols-3 gap-6">
+            <div className="grid py-3 grid-cols-1 xl:grid-cols-3 gap-6">
                 <Card title="Informe repartidores" color="bg-[#163269]">
-                    <div className="max-h-[150px] overflow-y-auto">
+                    <div className="h-[150px] overflow-y-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="text-left border-b">
@@ -280,7 +333,7 @@ function DashboardAdmin() {
                 </Card>
 
                 <Card title="Lo más vendido" color="bg-[#163269]">
-                    <div className="max-h-[150px] overflow-y-auto">
+                    <div className="h-[150px] overflow-y-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="text-left border-b">
@@ -311,7 +364,7 @@ function DashboardAdmin() {
                 </Card>
 
                 <Card title="Bajo en inventario" color="bg-red-400">
-                    <div className="max-h-[150px] overflow-y-auto">
+                    <div className="h-[150px] overflow-y-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="text-left border-b">
@@ -341,11 +394,11 @@ function DashboardAdmin() {
                     </div>
                 </Card>
             </div>
-            <div className='grid py-3 grid-cols-2 gap-6'>
+            <div className='grid py-3 grid-cols-1 md:grid-cols-2 gap-6'>
                 {/* fila inferior */}
-                <div >
+                <div>
                 <Card title="Pedidos" color="bg-[#163269]">
-                    <div className="h-[200px] w-[400px] overflow-y-auto">
+                    <div className="w-full h-[200px] md:h-[170px]  overflow-y-auto">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie
@@ -354,7 +407,7 @@ function DashboardAdmin() {
                                 nameKey="name"
                                 cx="50%"
                                 cy="50%"
-                                outerRadius={60}
+                                outerRadius={50}
                                 label
                                 >
                                 {pedidosChart.map((_, index) => (
@@ -362,9 +415,9 @@ function DashboardAdmin() {
                                 ))}
                                 </Pie>
                                 <Tooltip />
-                                <Legend layout="vertical"
-                                    verticalAlign="middle"
-                                    align="right"/>
+                                <Legend layout={isMobile ? "horizontal" : "vertical"}
+                                    verticalAlign={isMobile ? "bottom" : "middle"}
+                                    align={isMobile ? "center" : "right"} />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
@@ -372,7 +425,7 @@ function DashboardAdmin() {
                 </div>
 
                 <Card title="Ingresos del mes" color="bg-yellow-400">
-                    <div className="max-h-[150px] overflow-y-auto">
+                    <div className="h-[170px] overflow-y-auto">
                         <div><strong>Pedidos entregados:</strong> {capitalUtil.pedidos_entregados}</div>
                         <div><strong>Costo de items:</strong> L.{capitalUtil.costo_items.toFixed(2)}</div>
                         <div><strong>Ingresos brutos:</strong> L.{capitalUtil.ingresos_brut.toFixed(2)}</div>
