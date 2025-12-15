@@ -33,7 +33,7 @@ function LoginForm() {
         
         // Redirigir según el rol
         if (response.data.usuario.rol === 'Administrador') {
-          navigate('/admin');
+          navigate('/admin/dashboard');
         } else if (response.data.usuario.rol === 'Repartidor') {
           navigate('/repartidor');
         }
