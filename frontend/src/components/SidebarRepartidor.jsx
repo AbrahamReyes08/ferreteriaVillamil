@@ -89,15 +89,15 @@ export function SidebarRepartidor() {
         </Link>
 
         <Link
-          to="/perfil"
+          to="/repartidor/perfil-repartidor"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/perfil") ? "text-[#BC7D3B]" : "text-[#163269]"
+            isActive("/repartidor/perfil-repartidor") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaUser className="w-6 h-6" />
           <span
             className={`text-lg font-semibold ${
-              !isActive("/perfil") && "underline"
+              !isActive("/repartidor/perfil-repartidor") && "underline"
             }`}
           >
             Perfil
