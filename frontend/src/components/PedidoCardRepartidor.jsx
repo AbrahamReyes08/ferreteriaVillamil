@@ -24,6 +24,14 @@ export default function PedidoCardRepartidor() {
     const fetchPedido = async () => {
       try {
         setLoading(true);
+        console.log('PedidoCard - ID del pedido:', id);
+        
+        if (!id) {
+          console.error('PedidoCard - ID es undefined');
+          setError('ID de pedido no proporcionado');
+          return;
+        }
+        
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/${id}`);
         
         if (response.data.status === 'success') {

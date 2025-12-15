@@ -22,7 +22,16 @@ const createNewPedido = async (request, response) => {
       });
     }
 
-    const newPedido = await Pedido.create(request.body);
+    // Generar código de confirmación automáticamente
+    const codigo = generarCodigo();
+    
+    // Agregar código de confirmación al body del pedido
+    const pedidoData = {
+      ...request.body,
+      codigo_confirmacion: codigo,
+    };
+
+    const newPedido = await Pedido.create(pedidoData);
     return response.status(201).json({
       status: "success",
       data: newPedido,
@@ -299,6 +308,37 @@ const cancelarEnvio = async (request, response) => {
   }
 };
 
+const updateEstadoPedido = async (request, response) => {
+  const { id } = request.params;
+  const { estado } = request.body;
+  
+  try {
+    const pedido = await Pedido.findByPk(id);
+    
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+
+    await pedido.update({ estado });
+
+    return response.status(200).json({
+      status: "success",
+      message: "Estado del pedido actualizado correctamente",
+      data: pedido,
+    });
+  } catch (error) {
+    console.error("Error en updateEstadoPedido:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
@@ -310,5 +350,6 @@ module.exports = {
   getPedidosByRepartidor,
   getPedidosActivosByRepartidor,
   asignarRepartidor,
-  cancelarEnvio
+  cancelarEnvio,
+  updateEstadoPedido
 };
