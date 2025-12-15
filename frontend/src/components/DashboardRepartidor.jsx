@@ -115,35 +115,35 @@ export default function DashboardRepartidor() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Título */}
       <div className="mb-6">
-        <h1 className="text-[#163269] text-3xl font-bold pb-2 border-b-[3px] border-[#163269] inline-block">
+        <h1 className="text-[#163269] text-2xl md:text-3xl font-bold pb-2 border-b-[3px] border-[#163269] inline-block">
           Dashboard
         </h1>
       </div>
 
       {/* Tarjetas de estadísticas */}
-      <div className="flex gap-8 mb-8 justify-start">
-        <div className="bg-[#E5A944] rounded-full px-12 py-6 shadow-lg">
-          <p className="text-white text-xl font-bold whitespace-nowrap">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-8">
+        <div className="bg-[#E5A944] rounded-full px-6 py-4 sm:px-8 sm:py-6 shadow-lg flex-1">
+          <p className="text-white text-lg sm:text-xl font-bold text-center whitespace-nowrap">
             Pendientes: {pedidosAsignados.length}
           </p>
         </div>
-        <div className="bg-[#E5A944] rounded-full px-12 py-6 shadow-lg">
-          <p className="text-white text-xl font-bold whitespace-nowrap">
+        <div className="bg-[#E5A944] rounded-full px-6 py-4 sm:px-8 sm:py-6 shadow-lg flex-1">
+          <p className="text-white text-lg sm:text-xl font-bold text-center whitespace-nowrap">
             En Transcurso: {pedidosEnTranscurso.length}
           </p>
         </div>
-        <div className="bg-[#E5A944] rounded-full px-12 py-6 shadow-lg">
-          <p className="text-white text-xl font-bold whitespace-nowrap">
+        <div className="bg-[#E5A944] rounded-full px-6 py-4 sm:px-8 sm:py-6 shadow-lg flex-1">
+          <p className="text-white text-lg sm:text-xl font-bold text-center whitespace-nowrap">
             Entregados: {pedidosEntregados.length}
           </p>
         </div>
       </div>
 
       {/* Secciones de pedidos */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Pedidos Asignados */}
         <div className="bg-white rounded-3xl shadow-lg overflow-hidden">
           <div className="bg-[#163269] py-5">
@@ -160,31 +160,31 @@ export default function DashboardRepartidor() {
               pedidosAsignados.map((pedido) => (
                 <div
                   key={pedido.id_pedido || pedido.id}
-                  className="bg-[#EFEFEF] rounded-2xl p-5 flex items-center justify-between"
+                  className="bg-[#EFEFEF] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-3">
-                      <FaUser className="w-5 h-5 text-black" />
-                      <span className="text-black font-medium text-base">
+                      <FaUser className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black font-medium text-sm sm:text-base">
                         {pedido.cliente_nombre || 'Cliente'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <FaMapMarkerAlt className="w-5 h-5 text-black" />
-                      <span className="text-black text-sm">
+                      <FaMapMarkerAlt className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black text-xs sm:text-sm break-words">
                         {pedido.direccion_entrega || 'Sin dirección'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <FaBox className="w-5 h-5 text-black" />
-                      <span className="text-black text-sm">
+                      <FaBox className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black text-xs sm:text-sm">
                         Pedido #{pedido.id_pedido || pedido.id} • {formatDate(pedido.fecha_creacion)}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => handleVerPedido(pedido)}
-                    className="bg-[#BC7D3B] hover:bg-[#A66D33] text-white font-semibold px-7 py-2.5 rounded-xl transition-colors text-base"
+                    className="bg-[#BC7D3B] hover:bg-[#A66D33] text-white font-semibold px-6 py-2 rounded-xl transition-colors text-sm sm:text-base whitespace-nowrap self-start sm:self-auto"
                   >
                     Ver Pedido
                   </button>
@@ -210,31 +210,31 @@ export default function DashboardRepartidor() {
               pedidosEnTranscurso.map((pedido) => (
                 <div
                   key={pedido.id_pedido || pedido.id}
-                  className="bg-[#EFEFEF] rounded-2xl p-5 flex items-center justify-between"
+                  className="bg-[#EFEFEF] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
-                  <div className="space-y-2">
+                  <div className="space-y-2 flex-1">
                     <div className="flex items-center gap-3">
-                      <FaUser className="w-5 h-5 text-black" />
-                      <span className="text-black font-medium text-base">
+                      <FaUser className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black font-medium text-sm sm:text-base">
                         {pedido.cliente_nombre || 'Cliente'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <FaMapMarkerAlt className="w-5 h-5 text-black" />
-                      <span className="text-black text-sm">
+                      <FaMapMarkerAlt className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black text-xs sm:text-sm break-words">
                         {pedido.direccion_entrega || 'Sin dirección'}
                       </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <FaBox className="w-5 h-5 text-black" />
-                      <span className="text-black text-sm">
+                      <FaBox className="w-5 h-5 text-black flex-shrink-0" />
+                      <span className="text-black text-xs sm:text-sm">
                         Pedido #{pedido.id_pedido || pedido.id} • {formatDate(pedido.fecha_creacion)}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => handleVerPedido(pedido)}
-                    className="bg-[#BC7D3B] hover:bg-[#A66D33] text-white font-semibold px-7 py-2.5 rounded-xl transition-colors text-base"
+                    className="bg-[#BC7D3B] hover:bg-[#A66D33] text-white font-semibold px-6 py-2 rounded-xl transition-colors text-sm sm:text-base whitespace-nowrap self-start sm:self-auto"
                   >
                     Ver Pedido
                   </button>

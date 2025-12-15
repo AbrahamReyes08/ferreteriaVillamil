@@ -92,17 +92,17 @@ function PerfilRepartidor() {
   };
 
   return (
-    <div className="w-full">
-      <div className="max-w-5xl">
+    <div className="w-full p-4 md:p-6">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <h1 className="text-3xl font-bold mb-5 pb-4 border-b-4" style={{ color: '#163269', borderColor: '#163269' }}>
+        <h1 className="text-2xl md:text-3xl font-bold mb-5 pb-4 border-b-4" style={{ color: '#163269', borderColor: '#163269' }}>
             Perfil Repartidor
         </h1>
 
-        <div className="flex gap-10 mt-10">
-          <div className="flex flex-col gap-5">
+        <div className="flex flex-col md:flex-row gap-6 md:gap-10 mt-10">
+          <div className="flex flex-col gap-5 items-center md:items-start">
             <Avatar 
-              size={180} 
+              size={{ xs: 80, sm: 100, md: 120, lg: 180 }} 
               icon={<UserOutlined />} 
               style={{ backgroundColor: '#B2B6B5' }}
               className="flex items-center justify-center"
@@ -111,7 +111,7 @@ function PerfilRepartidor() {
               <button
                 onClick={handleEditClick}
                 disabled={loading}
-                className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto"
                 style={{ 
                   backgroundColor: '#163269',
                   color: 'white'
@@ -120,11 +120,11 @@ function PerfilRepartidor() {
                 Editar
               </button>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <button
                   onClick={handleSubmit}
                   disabled={loading}
-                  className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1"
                   style={{ 
                     backgroundColor: '#163269',
                     color: 'white'
@@ -135,7 +135,7 @@ function PerfilRepartidor() {
                 <button
                   onClick={handleCancelEdit}
                   disabled={loading}
-                  className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1"
                   style={{ 
                     backgroundColor: '#BC7D3B',
                     color: 'white'
@@ -149,7 +149,7 @@ function PerfilRepartidor() {
 
           {/* Forms */}
           <div className="flex-1 max-w-3xl">
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block font-semibold mb-2" style={{ color: '#163269' }}>
                   Nombre:
@@ -217,7 +217,7 @@ function PerfilRepartidor() {
               </div>
             </div>
 
-            <div className="mt-5" style={{ maxWidth: '48%' }}>
+            <div className="mt-5 sm:max-w-[48%]">
               <label className="block font-semibold mb-2" style={{ color: '#163269' }}>
                 Rol:
               </label>

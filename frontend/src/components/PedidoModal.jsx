@@ -102,12 +102,12 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
   if (!pedido) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header del modal */}
-        <div className="bg-[#163269] p-6 rounded-t-3xl">
+        <div className="bg-[#163269] p-4 sm:p-6 rounded-t-3xl">
           <div className="flex items-center justify-between">
-            <h2 className="text-white text-2xl font-bold">
+            <h2 className="text-white text-xl sm:text-2xl font-bold">
               Pedido #{pedido.id_pedido || pedido.id}
             </h2>
             <button
@@ -122,14 +122,14 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
         </div>
 
         {/* Contenido del modal */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {error && (
             <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
               {error}
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Información del cliente */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-[#163269] border-b border-gray-200 pb-2">
