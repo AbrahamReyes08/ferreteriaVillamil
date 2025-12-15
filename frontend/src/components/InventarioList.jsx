@@ -89,7 +89,7 @@ function InventarioList() {
 
     useEffect(() => {
         fetchArticulos();
-    }, );
+    }, []);
 
     return (
         <div className="w-full">

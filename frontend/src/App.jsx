@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import CrearUsuario from "./components/CrearUsuario.jsx";
 import UserListAdmin from "./components/UserListAdmin.jsx";
 import PedidoCardRepartidor from "./components/PedidoCardRepartidor.jsx";
+import DashboardRepartidor from "./components/DashboardRepartidor.jsx";
 import ListaPedidosRepartidor from "./components/ListaPedidosRepartidor.jsx";
 import NuevoArticuloForm from "./components/ItemForm.jsx";
 import InventarioList from "./components/InventarioList.jsx";
@@ -48,10 +49,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route
-            index
-            element={<h1 className="text-3xl">Panel Repartidor</h1>}
-          />
+          <Route index element={<DashboardRepartidor />} />
           <Route path="pedido/:id" element={<PedidoCardRepartidor />} />
           <Route path="pedidos" element={<ListaPedidosRepartidor />} />
         </Route>

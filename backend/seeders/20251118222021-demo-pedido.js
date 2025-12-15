@@ -280,7 +280,7 @@ module.exports = {
         id_repartidor_asignado: null,
         id_admin_creador: 1,
         estado: 'Pendiente',
-        codigo_confirmacion: null,
+        codigo_confirmacion: '999888',
         costo_envio: 50,
         total: 300,
         direccion_entrega: 'Col. Nueva Capital, Tegucigalpa',
@@ -301,7 +301,7 @@ module.exports = {
         id_repartidor_asignado: 5, // Juan Pérez - Primer pedido activo
         id_admin_creador: 2,
         estado: 'Asignado',
-        codigo_confirmacion: null,
+        codigo_confirmacion: '111222',
         costo_envio: 40,
         total: 220,
         direccion_entrega: 'Col. La Montañita, Tegucigalpa',
@@ -343,7 +343,7 @@ module.exports = {
         id_repartidor_asignado: 4, // María González - Pedido cancelado
         id_admin_creador: 2,
         estado: 'Cancelado',
-        codigo_confirmacion: null,
+        codigo_confirmacion: '777888',
         costo_envio: 50,
         total: 350,
         direccion_entrega: 'Col. La Leona, Tegucigalpa',
@@ -364,7 +364,7 @@ module.exports = {
         id_repartidor_asignado: 5, // Juan Pérez - Segundo pedido activo
         id_admin_creador: 1,
         estado: 'Asignado',
-        codigo_confirmacion: null,
+        codigo_confirmacion: '333444',
         costo_envio: 35,
         total: 195,
         direccion_entrega: 'Col. Boulevard, Tegucigalpa',
@@ -385,7 +385,7 @@ module.exports = {
         id_repartidor_asignado: 6, // Ana Rodríguez - Segundo pedido activo
         id_admin_creador: 2,
         estado: 'Asignado',
-        codigo_confirmacion: null,
+        codigo_confirmacion: '555666',
         costo_envio: 40,
         total: 260,
         direccion_entrega: 'Col. Kennedy, Tegucigalpa',
