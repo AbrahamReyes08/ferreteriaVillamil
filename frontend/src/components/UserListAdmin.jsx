@@ -140,6 +140,16 @@ function UserListAdmin() {
           </div>
         </div>
 
+        <div className="flex items-center justify-end mb-4 gap-1">
+          <button
+            onClick={handleNuevoUsuario}
+            className="px-8 py-3 rounded-lg text-white font-semibold text-lg transition-colors hover:opacity-90"
+            style={{ backgroundColor: "#163269" }}
+          >
+            Nuevo Usuario
+          </button>
+        </div>
+
         {/* Lista */}
         {loading ? (
           <div className="text-center py-10">
@@ -238,15 +248,7 @@ function UserListAdmin() {
           </div>
         )}
 
-        <div className="flex justify-end mt-8">
-          <button
-            onClick={handleNuevoUsuario}
-            className="px-8 py-3 rounded-lg text-white font-semibold text-lg transition-colors hover:opacity-90"
-            style={{ backgroundColor: "#163269" }}
-          >
-            Nuevo Usuario
-          </button>
-        </div>
+        
       </div>
     </div>
   );
