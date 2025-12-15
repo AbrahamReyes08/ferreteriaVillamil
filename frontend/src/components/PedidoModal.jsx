@@ -151,6 +151,24 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
+                  <FaBox className="w-5 h-5 text-[#163269]" />
+                  <div>
+                    <p className="text-sm text-gray-500">Enlace de Seguimiento</p>
+                    {pedido.link_seguimiento ? (
+                      <a 
+                        href={pedido.link_seguimiento} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="font-medium text-blue-600 hover:underline"
+                      >
+                        {pedido.link_seguimiento}
+                      </a>
+                    ) : (
+                      <span className="font-medium text-gray-500">No disponible</span>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
                   <FaBox className="w-5 h-5 text-[#BC7D3B]" />
                   <div>
                     <p className="text-sm text-gray-500">Fecha del Pedido</p>

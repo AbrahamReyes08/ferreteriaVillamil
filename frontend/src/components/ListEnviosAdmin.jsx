@@ -3,6 +3,7 @@ import { message } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
 import CancelarEnvioModal from "./CancelarEnvioModal";
+import DetallePedidoModal from "./DetallePedidoModal";
 
 function ListEnviosAdmin() {
   const [envios, setEnvios] = useState([]);
@@ -11,6 +12,7 @@ function ListEnviosAdmin() {
   const [filterValue, setFilterValue] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedEnvio, setSelectedEnvio] = useState(null);
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
   
   const handleOpenModal = (envio) => {
     setSelectedEnvio(envio);
@@ -21,6 +23,16 @@ function ListEnviosAdmin() {
     setIsModalVisible(false);
     setSelectedEnvio(null);
     fetchEnvios();
+  };
+
+  const handleVerDetalles = (envio) => {
+    setSelectedEnvio(envio);
+    setShowDetalleModal(true);
+  };
+
+  const handleCloseDetalleModal = () => {
+    setShowDetalleModal(false);
+    setSelectedEnvio(null);
   };
 
   useEffect(() => {
@@ -142,18 +154,29 @@ function ListEnviosAdmin() {
                       {envio.estado}
                     </span>
 
-                    {envio.estado !== "Cancelado" && (
+                    <div className="flex gap-2 mt-2">
                       <button
-                        onClick={() => handleOpenModal(envio)}
-                        className="px-5 py-1 text-white font-medium"
-                        title="Cancelar envio"
+                        onClick={() => handleVerDetalles(envio)}
+                        className="px-3 py-1 text-white font-medium text-sm rounded"
+                        title="Ver detalles del envío"
+                        style={{ backgroundColor: "#163269" }}
                       >
-                        <CloseCircleOutlined
-                          className="text-2xl"
-                          style={{ color: "#163269" }}
-                        />
+                        Ver Detalles
                       </button>
-                    )}
+                      
+                      {envio.estado !== "Cancelado" && (
+                        <button
+                          onClick={() => handleOpenModal(envio)}
+                          className="px-5 py-1 text-white font-medium"
+                          title="Cancelar envio"
+                        >
+                          <CloseCircleOutlined
+                            className="text-2xl"
+                            style={{ color: "#163269" }}
+                          />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -167,6 +190,13 @@ function ListEnviosAdmin() {
         onClose={handleCloseModal}
         pedidoId={selectedEnvio?.id_pedido}
       />
+
+      {showDetalleModal && selectedEnvio && (
+        <DetallePedidoModal 
+          pedidoId={selectedEnvio.id_pedido || selectedEnvio.id}
+          onClose={handleCloseDetalleModal}
+        />
+      )}
     </div>
   );
 }
