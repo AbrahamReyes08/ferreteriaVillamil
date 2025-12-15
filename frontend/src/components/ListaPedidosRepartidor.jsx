@@ -3,6 +3,7 @@ import { Cascader, message } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DetallePedidoModal from "./DetallePedidoModal";
 
 function ListaPedidosRepartidor() {
   const navigate = useNavigate();
@@ -10,6 +11,8 @@ function ListaPedidosRepartidor() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filterValue, setFilterValue] = useState(null);
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+  const [selectedPedido, setSelectedPedido] = useState(null);
 
   const options = [
     {
@@ -89,6 +92,16 @@ function ListaPedidosRepartidor() {
 
   const onChange = (value) => {
     setFilterValue(value && value.length ? value[value.length - 1] : null);
+  };
+
+  const handleVerDetalles = (pedido) => {
+    setSelectedPedido(pedido);
+    setShowDetalleModal(true);
+  };
+
+  const handleCloseDetalleModal = () => {
+    setShowDetalleModal(false);
+    setSelectedPedido(null);
   };
 
   return (
@@ -181,20 +194,37 @@ function ListaPedidosRepartidor() {
                       )}
                     </p>
                   </div>
-                  <span
-                    className="px-6 py-1 rounded-full text-white font-medium shadow-lg self-start"
-                    style={{
-                      backgroundColor: handleEstadoColor(pedido.estado),
-                    }}
-                  >
-                    {pedido.estado}
-                  </span>
+                  <div className="flex flex-col items-end gap-2">
+                    <span
+                      className="px-6 py-1 rounded-full text-white font-medium shadow-lg"
+                      style={{
+                        backgroundColor: handleEstadoColor(pedido.estado),
+                      }}
+                    >
+                      {pedido.estado}
+                    </span>
+                    <button
+                      onClick={() => handleVerDetalles(pedido)}
+                      className="px-3 py-1 text-white font-medium text-sm rounded"
+                      title="Ver detalles del pedido"
+                      style={{ backgroundColor: "#163269" }}
+                    >
+                      Ver Detalles
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {showDetalleModal && selectedPedido && (
+        <DetallePedidoModal 
+          pedidoId={selectedPedido.id_pedido || selectedPedido.id}
+          onClose={handleCloseDetalleModal}
+        />
+      )}
     </div>
   );
 }

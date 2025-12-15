@@ -5,6 +5,7 @@ const userCtrl = require("../controllers/pedido.js");
 router.post("/newPedido", userCtrl.createNewPedido);
 router.get("/getAllPedidos", userCtrl.getAllPedidos);
 router.get("/:id", userCtrl.getPedidoById);
+router.get("/:id/detalles", userCtrl.getDetallesPedido);
 router.delete("/deletePedido/:id", userCtrl.deletePedido);
 router.put("/updatePedido/:id", userCtrl.updatePedido);
 router.post("/:id/generar-codigo", userCtrl.mandarCodigoEntregado);

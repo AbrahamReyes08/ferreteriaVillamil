@@ -3,7 +3,8 @@ import { message } from "antd";
 import { SelectOutlined } from "@ant-design/icons";
 import axios from "axios";
 import AsignarRepartidorModal from "./AsignarRepartidorModal";
-  import { useNavigate } from "react-router-dom";
+import DetallePedidoModal from "./DetallePedidoModal";
+import { useNavigate } from "react-router-dom";
 
 function ListaPedidosAdmin() {
   const navigate = useNavigate();
@@ -14,7 +15,8 @@ function ListaPedidosAdmin() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [repartidores, setRepartidores] = useState([]);
   const [selectedPedido, setSelectedPedido] = useState(null);
-  
+  const [showDetalleModal, setShowDetalleModal] = useState(false);
+
   const handleOpenModal = (pedido) => {
     setSelectedPedido(pedido);
     setIsModalVisible(true);
@@ -22,6 +24,16 @@ function ListaPedidosAdmin() {
 
   const handleCloseModal = () => {
     setIsModalVisible(false);
+    setSelectedPedido(null);
+  };
+
+  const handleVerDetalles = (pedido) => {
+    setSelectedPedido(pedido);
+    setShowDetalleModal(true);
+  };
+
+  const handleCloseDetalleModal = () => {
+    setShowDetalleModal(false);
     setSelectedPedido(null);
   };
 
@@ -188,16 +200,27 @@ function ListaPedidosAdmin() {
                       {pedido.estado}
                     </span>
 
-                    <button
-                      onClick={() => handleOpenModal(pedido)}
-                      className="px-5 py-1 text-white font-medium"
-                      title="Asignar repartidor"
-                    >
-                      <SelectOutlined
-                        className="text-2xl"
-                        style={{ color: "#163269" }}
-                      />
-                    </button>
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={() => handleVerDetalles(pedido)}
+                        className="px-3 py-1 text-white font-medium text-sm rounded"
+                        title="Ver detalles del pedido"
+                        style={{ backgroundColor: "#163269" }}
+                      >
+                        Ver Detalles
+                      </button>
+                      
+                      <button
+                        onClick={() => handleOpenModal(pedido)}
+                        className="px-5 py-1 text-white font-medium"
+                        title="Asignar repartidor"
+                      >
+                        <SelectOutlined
+                          className="text-2xl"
+                          style={{ color: "#163269" }}
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -213,6 +236,13 @@ function ListaPedidosAdmin() {
         repartidores={repartidores}
         pedidoId={selectedPedido?.id_pedido}
       />
+
+      {showDetalleModal && selectedPedido && (
+        <DetallePedidoModal 
+          pedidoId={selectedPedido.id_pedido || selectedPedido.id}
+          onClose={handleCloseDetalleModal}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-const { Pedido, Usuario } = require("../models");
+const { Pedido, Usuario, Detalle_Pedido, Articulo } = require("../models");
 
 const createNewPedido = async (request, response) => {
   try {
@@ -339,10 +339,49 @@ const updateEstadoPedido = async (request, response) => {
   }
 };
 
+const getDetallesPedido = async (request, response) => {
+  const { id } = request.params;
+  try {
+    const pedido = await Pedido.findByPk(id, {
+      include: [
+        {
+          model: Detalle_Pedido,
+          include: [
+            {
+              model: Articulo,
+              attributes: ['id_articulo', 'nombre', 'descripcion', 'precio'],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido not found",
+      });
+    }
+
+    return response.status(200).json({
+      status: "success",
+      data: pedido,
+    });
+  } catch (error) {
+    console.error("Error en getDetallesPedido:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
   getPedidoById,
+  getDetallesPedido,
   deletePedido,
   updatePedido,
   mandarCodigoEntregado,
