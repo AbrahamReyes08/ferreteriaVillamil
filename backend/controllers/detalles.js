@@ -37,6 +37,54 @@ const nuevoDetalle = async (request, response) => {
     }
 }
 
+const getDetallesByIDPedido = async (request, response) => {
+    const { id_pedido } = request.params;
+    if (!id_pedido) {
+        return response.status(400).json({
+            status: "Error",
+            message: "ID de pedido no proporcionado"
+        });
+    }
+
+    try {
+        const detalles = await Detalle_Pedido.findAll({
+            where: { id_pedido: id_pedido }
+        });
+
+        return response.status(200).json({
+            status: "Success",
+            message: "Detalles del pedido obtenidos con éxito",
+            data: detalles
+        });
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({
+            status: "Error",
+            message: error.message
+        });
+    }
+}
+
+const getDetalles = async (request, response) => {
+    try {
+        const detalles = await Detalle_Pedido.findAll();
+
+        return response.status(200).json({
+            status: "Success",
+            message: "Detalles del pedido obtenidos con éxito",
+            data: detalles
+        });
+    } catch (error) {
+        console.error(error);
+        return response.status(500).json({
+            status: "Error",
+            message: error.message
+        });
+    }
+}
+
 module.exports = {
-    nuevoDetalle
+    nuevoDetalle,
+    getDetallesByIDPedido,
+    getDetalles
 };

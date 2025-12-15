@@ -56,15 +56,15 @@ export function SidebarAdmin() {
       {/*Menu */}
       <nav className="flex-1 py-8">
         <Link
-          to="/dashboard"
+          to="/admin/dashboard"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
-            isActive("/dashboard") ? "text-[#BC7D3B]" : "text-[#163269]"
+            isActive("/admin/dashboard") ? "text-[#BC7D3B]" : "text-[#163269]"
           }`}
         >
           <FaHome className="w-6 h-6" />
           <span
             className={`text-lg font-semibold ${
-              !isActive("/dashboard") && "underline"
+              !isActive("/admin/dashboard") && "underline"
             }`}
           >
             Dashboard

@@ -12,6 +12,7 @@ import InventarioList from "./components/InventarioList.jsx";
 import ListaPedidosAdmin from "./components/ListaPedidosAdmin.jsx";
 import NuevoPedidoForm from "./components/PedidoForm.jsx";
 import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
+import DashboardAdmin from "./components/DashboardAdmin.jsx";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           }
         >
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
+          <Route path="dashboard" element={<DashboardAdmin />} />
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
           <Route path="inventario/crear-articulo" element={<NuevoArticuloForm />} />
