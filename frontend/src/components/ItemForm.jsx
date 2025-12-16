@@ -90,11 +90,11 @@ function NuevoArticuloForm() {
       <div className="max-w-5xl">
         {/* Header (page) */}
         <div className="flex items-center justify-between mb-5">
-          <h1
+          <h1 
             className="text-3xl font-bold pb-4 border-b-4 flex-1"
             style={{ color: "#163269", borderColor: "#163269" }}
           >
-            Nuevo Articulo
+          {isEditMode ? "Editar Artículo" : "Nuevo Artículo"}
           </h1>
         </div>
 
@@ -323,7 +323,9 @@ function NuevoArticuloForm() {
               color: "white",
             }}
           >
-            {loading ? "Agregando..." : "Agregar"}
+            {loading
+              ? isEditMode ? "Actualizando..." : "Agregando..."
+              : isEditMode ? "Actualizar" : "Agregar"}
           </button>
         </div>
       </div>
