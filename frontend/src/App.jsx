@@ -15,6 +15,7 @@ import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
 import DashboardAdmin from "./components/DashboardAdmin.jsx";
 import PerfilRepartidor from "./components/PerfilRepartidor.jsx";
 import PerfilAdmin from "./components/PerfilAdmin.jsx";
+import EditarUsuario from "./components/EditarUsuario.jsx";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route index element={<h1 className="text-3xl">Panel Admin</h1>} />
           <Route path="dashboard" element={<DashboardAdmin />} />
           <Route path="usuarios/crear-usuario" element={<CrearUsuario />} />
+          <Route path="usuarios/editar/:id" element={<EditarUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
           <Route path="inventario/crear-articulo" element={<NuevoArticuloForm />} />
           <Route path="inventario" element={<InventarioList />} />
