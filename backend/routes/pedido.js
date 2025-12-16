@@ -15,6 +15,8 @@ router.get("/repartidor/:id_repartidor/pedidos-activos", userCtrl.getPedidosActi
 router.post("/:id/asignar-repartidor", userCtrl.asignarRepartidor);
 router.post("/:id/cancelar-envio", userCtrl.cancelarEnvio);
 router.put("/:id/estado", userCtrl.updateEstadoPedido);
+// Endpoint público para tracking de pedidos (sin autenticación)
+router.get("/cliente/tracking/:id", userCtrl.getPedidoClienteTracking);
 //Este comentario deberia arreglar el bug de sync con el repo
 
 module.exports = router;

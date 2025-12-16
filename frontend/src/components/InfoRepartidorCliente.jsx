@@ -4,24 +4,24 @@ import { UserOutlined } from '@ant-design/icons';
 
 function InfoRepartidorCliente({ nombre, telefono }) {
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-sm border border-gray-200">
-      <Avatar
-        size={64}
-        icon={<UserOutlined />}
-        style={{ 
-          backgroundColor: '#B2B6B5',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      />
-      <div className="flex flex-col">
-        <h3 className="text-lg font-semibold" style={{ color: '#163269' }}>
-          {nombre || 'Nombre del Repartidor'}
-        </h3>
-        <p className="text-sm" style={{ color: '#666' }}>
-          {telefono || 'Teléfono del Repartidor'}
-        </p>
+    <div className="bg-gray-50 rounded-lg p-4 sm:p-6">
+      <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="flex-shrink-0">
+          <Avatar 
+            size={48} 
+            icon={<UserOutlined />} 
+            style={{ backgroundColor: '#B2B6B5' }}
+            className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className="text-base sm:text-lg font-semibold text-gray-800 truncate">
+            {nombre || 'No asignado'}
+          </h4>
+          <p className="text-sm sm:text-base text-gray-600 truncate">
+            {telefono || 'No disponible'}
+          </p>
+        </div>
       </div>
     </div>
   );

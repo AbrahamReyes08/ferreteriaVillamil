@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 const authMiddleware = (req, res, next) => {
+  // Excepción para la ruta pública de tracking de clientes
+  if (req.path.startsWith('/cliente/tracking/') && req.method === 'GET') {
+    return next();
+  }
+
   try {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
