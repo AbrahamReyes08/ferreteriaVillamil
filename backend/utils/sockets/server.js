@@ -1,4 +1,5 @@
 const { Server } = require('socket.io');
+const { Pedido } = require('../../models');
 
 
 /*
@@ -9,9 +10,19 @@ const { Server } = require('socket.io');
  - location:update -> el repartidor comparte su lat/lng y se reenvía a todos los sockets en la sala.
 */
 const attachSocket = (server) =>{
+    const lastLocations = new Map();
     const io = new Server(server, {
         cors: {
-            origin: "*",
+            origin: [
+                "https://localhost:5173", 
+                "http://localhost:5173", 
+                "http://localhost:3000",
+                "https://grab-remarkable-clips-virgin.trycloudflare.com",
+                "https://paradise-corp-version-inch.trycloudflare.com",
+                /^https?:\/\/(?:localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):[0-9]+$/
+            ],
+            methods: ["GET", "POST"],
+            credentials: true
         }
     });
 
@@ -28,19 +39,41 @@ const attachSocket = (server) =>{
             //Confirma que se une
             socket.emit('order:joined', {response: true});
 
+            if(role === 'cliente'){
+                const last = lastLocations.get(String(pedido));
+                if (last) {
+                    socket.emit('location:update', last);
+                }
+            }
+
             if(role === 'repartidor'){
                 //Escucha las actualizaciones de ubicacion del repartidor
-                socket.on('location:update', (locationData) => {
-                    const {pedido, lat, lng} = locationData;
-                    console.log(`Ubicacion del repartidor para el pedido ${pedido}: Latitud ${lat}, Longitud ${lng}`);
-                    //Transmite la ubicacion a todos los clientes en la sala del pedido
-                    io.to(pedido).emit('location:update', {lat, lng});
+                socket.on('location:update', async (locationData) => {
+                    const {pedido, lat, lng, accuracy, timestamp} = locationData;
+                    try {
+                        const pedidoDb = await Pedido.findOne({
+                            where: { id_pedido: pedido },
+                            attributes: ['estado']
+                        });
+
+                        if (!pedidoDb || pedidoDb.estado !== 'En transcurso') {
+                            return;
+                        }
+
+                        const payload = { lat, lng, accuracy, timestamp };
+                        lastLocations.set(String(pedido), payload);
+                        console.log(`Ubicacion del repartidor para el pedido ${pedido}: Latitud ${lat}, Longitud ${lng}`);
+                        //Transmite la ubicacion a todos los clientes en la sala del pedido
+                        io.to(pedido).emit('location:update', payload);
+                    } catch (err) {
+                        console.error('Error validando estado del pedido para tracking:', err);
+                    }
                 });
             }
 
         });
 
-        
+
         socket.on('disconnect', () => {
             console.log(`usuario ${role} desconectado`);
         });

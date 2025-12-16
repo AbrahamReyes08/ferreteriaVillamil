@@ -15,6 +15,7 @@ import ListEnviosAdmin from "./components/ListEnviosAdmin.jsx";
 import DashboardAdmin from "./components/DashboardAdmin.jsx";
 import PerfilRepartidor from "./components/PerfilRepartidor.jsx";
 import PerfilAdmin from "./components/PerfilAdmin.jsx";
+import MapaSeguimientoPedido from "./components/MapaSeguimientoPedido.jsx";
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
       <Routes>
         {/* Página sin sidebar */}
         <Route path="/" element={<LoginForm />} />
+
+        {/* Página pública de tracking - SIN AUTENTICACIÓN */}
+        <Route path="/cliente/tracking/:pedidoId" element={<MapaSeguimientoPedido />} />
 
         {/* Páginas que llevan sidebar del admin - PROTEGIDAS */}
         <Route

@@ -19,7 +19,7 @@ function CrearUsuario() {
     setLoading(true);
     
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/usuarios/usuarios`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/usuarios/usuarios`, {
         nombre,
         correo,
         clave,

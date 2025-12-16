@@ -16,7 +16,7 @@ function InventarioList() {
     const [articuloSel, setArticuloSel] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const navigate = useNavigate();
-    const baseUrl = import.meta.env.VITE_SERVER_URL;
+    const baseUrl = import.meta.env.VITE_API_URL;
     
     const fetchArticulos = async () => {
         try {

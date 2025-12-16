@@ -8,7 +8,7 @@ const CancelarEnvioModal = ({ isOpen, onClose, pedidoId }) => {
 
   const handleCancelarEnvio = async () => {
     try {
-      const response = await axios.post(`http://localhost:3000/api/pedidos/${pedidoId}/cancelar-envio`);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/pedidos/${pedidoId}/cancelar-envio`);
       message.success('Envio cancelado correctamente');
       onClose();
     } catch (error) {

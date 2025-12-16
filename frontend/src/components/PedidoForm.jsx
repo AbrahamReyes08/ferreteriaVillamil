@@ -33,7 +33,7 @@ function NuevoPedidoForm() {
     const fetchArticulos = async () => {
         try {
             const response = await axios.get(
-                `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/articulos/list/active`
+                `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/articulos/list/active`
             );
 
             setArticulos(response.data.data)
@@ -67,13 +67,13 @@ function NuevoPedidoForm() {
         setLoading(true);
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/newPedido`, {...form, numero_pedido: "PED"});
+            const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/pedidos/newPedido`, {...form, numero_pedido: "PED"});
             
             const id_pedido= response.data.data.id_pedido;
             const idFormat = String(id_pedido).padStart(3, '0');
             const numeroPedidoNew = `PED${idFormat}`;
 
-            await axios.put(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/pedidos/updatePedido/${id_pedido}`, {numero_pedido: numeroPedidoNew});
+            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/pedidos/updatePedido/${id_pedido}`, {numero_pedido: numeroPedidoNew});
 
             message.success('Pedido creado exitosamente');
             setForm({
@@ -99,7 +99,7 @@ function NuevoPedidoForm() {
             await Promise.all(
                 detallesConPedido.map(detalle =>
                     axios.post(
-                        `${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/detalles/new`,
+                        `${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/detalles/new`,
                         detalle
                     )
                 )

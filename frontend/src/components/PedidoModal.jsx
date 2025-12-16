@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { FaUser, FaMapMarkerAlt, FaBox } from 'react-icons/fa';
 import axios from 'axios';
+import { startLocationTracking, stopLocationTracking } from '../location-tracking/location';
 
 // Configurar axios para enviar token en todas las peticiones
 axios.interceptors.request.use(config => {
@@ -40,11 +41,18 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
       setError(null);
       
       const pedidoId = pedido.id_pedido || pedido.id;
-      const response = await axios.put(`${import.meta.env.VITE_SERVER_URL}/pedidos/${pedidoId}/estado`, {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/pedidos/${pedidoId}/estado`, {
         estado: 'En transcurso'
       });
 
       if (response.data.status === 'success') {
+        // Iniciar tracking de ubicación del repartidor
+        const serverUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+        startLocationTracking(serverUrl, {
+          role: 'repartidor',
+          pedido: pedidoId
+        });
+        
         onEstadoChange(pedidoId, 'En transcurso');
         onClose();
       } else {
@@ -81,9 +89,12 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
       const pedidoId = pedido.id_pedido || pedido.id;
       
       // Validar el código usando el endpoint existente
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/pedidos/${pedidoId}/${codigoInput}/validar-codigo`);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/pedidos/${pedidoId}/${codigoInput}/validar-codigo`);
 
       if (response.data.status === 'success') {
+        // Detener tracking de ubicación del repartidor
+        stopLocationTracking();
+        
         onEstadoChange(pedidoId, 'Entregado');
         setShowCodigoModal(false);
         setCodigoInput('');
@@ -108,7 +119,7 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
         <div className="bg-[#163269] p-4 sm:p-6 rounded-t-3xl">
           <div className="flex items-center justify-between">
             <h2 className="text-white text-xl sm:text-2xl font-bold">
-              Pedido #{pedido.id_pedido || pedido.id}
+              Pedido #{pedido.numero_pedido}
             </h2>
             <button
               onClick={onClose}
@@ -154,14 +165,14 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
                   <FaBox className="w-5 h-5 text-[#163269]" />
                   <div>
                     <p className="text-sm text-gray-500">Enlace de Seguimiento</p>
-                    {pedido.link_seguimiento ? (
+                    {pedido.numero_pedido ? (
                       <a 
-                        href={pedido.link_seguimiento} 
+                        href={`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="font-medium text-blue-600 hover:underline"
                       >
-                        {pedido.link_seguimiento}
+                        {`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
                       </a>
                     ) : (
                       <span className="font-medium text-gray-500">No disponible</span>
@@ -209,7 +220,7 @@ export default function PedidoModal({ pedido, onClose, onEstadoChange }) {
 
           {/* Acciones */}
           <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="flex gap-4 justify-end">
+            <div className="flex gap-4 justify-end flex-wrap">
               {pedido.estado === 'Asignado' && (
                 <button
                   onClick={handleIniciarEntrega}

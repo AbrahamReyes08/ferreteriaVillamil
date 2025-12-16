@@ -64,7 +64,7 @@ function ListaPedidosAdmin() {
       const repartidorId = usuario.id_usuario;
 
       const response = await axios.get(
-        `http://localhost:3000/api/pedidos/getAllPedidos`
+        `${import.meta.env.VITE_API_URL || '/api'}/pedidos/getAllPedidos`
       );
 
       const pedidosData = response.data.data || response.data;
@@ -82,7 +82,7 @@ function ListaPedidosAdmin() {
   const fetchRepartidores = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/usuarios/usuarios`
+        `${import.meta.env.VITE_API_URL || '/api'}/usuarios/usuarios`
       );
       
       const repartidoresActivos = response.data.filter(

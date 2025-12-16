@@ -1,6 +1,7 @@
 const { Usuario, Pedido } = require("../models");
 const crypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 module.exports = {
   //Create
   createUsuario: async (req, res) => {
@@ -132,7 +133,31 @@ module.exports = {
         return res.status(400).json({ message: "Usuario y contraseña son obligatorios" });
       }
 
-      const user = await Usuario.findOne({ where: { nombre: usuario } });
+      const usuarioInput = String(usuario).trim();
+
+      const normalize = (value) =>
+        String(value || '')
+          .trim()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase();
+
+      let user = await Usuario.findOne({
+        where: {
+          [Op.or]: [{ nombre: usuarioInput }, { correo: usuarioInput }]
+        }
+      });
+
+      if (!user) {
+        const usuariosActivos = await Usuario.findAll({
+          where: { estado: 'Activo' }
+        });
+        const target = normalize(usuarioInput);
+        user =
+          usuariosActivos.find(
+            (u) => normalize(u.nombre) === target || normalize(u.correo) === target
+          ) || null;
+      }
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
