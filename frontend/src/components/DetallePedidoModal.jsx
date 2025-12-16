@@ -10,7 +10,7 @@ const DetallePedidoModal = ({ pedidoId, onClose }) => {
     const fetchPedidoDetalles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/${pedidoId}/detalles`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/pedidos/${pedidoId}/detalles`);
         
         if (response.data.status === 'success') {
           setPedido(response.data.data);
@@ -82,7 +82,7 @@ const DetallePedidoModal = ({ pedidoId, onClose }) => {
       <div className="bg-white rounded-lg p-4 sm:p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-            Detalles del Pedido #{pedido.numero_pedido || pedido.id}
+            Detalles del Pedido #{pedido.numero_pedido}
           </h2>
           <button
             onClick={onClose}
@@ -105,7 +105,7 @@ const DetallePedidoModal = ({ pedidoId, onClose }) => {
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-gray-700 mb-3">Información del Pedido</h3>
           <div className="bg-gray-50 rounded p-4 space-y-2">
-            <p><span className="font-medium">Número de Pedido:</span> #{pedido.numero_pedido || pedido.id_pedido}</p>
+            <p><span className="font-medium">Número de Pedido:</span> #{pedido.numero_pedido}</p>
             <p><span className="font-medium">Fecha de Creación:</span> {formatDate(pedido.fecha_creacion)}</p>
             <p><span className="font-medium">Fecha de Asignación:</span> {formatDate(pedido.fecha_asignacion)}</p>
             <p><span className="font-medium">Fecha de Entrega:</span> {formatDate(pedido.fecha_entrega)}</p>
@@ -122,9 +122,14 @@ const DetallePedidoModal = ({ pedidoId, onClose }) => {
               </span>
             </p>
             <p><span className="font-medium">Enlace de Seguimiento:</span> 
-              {pedido.link_seguimiento ? (
-                <a href={pedido.link_seguimiento} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline ml-2">
-                  {pedido.link_seguimiento}
+              {pedido.numero_pedido ? (
+                <a 
+                  href={`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-blue-600 hover:underline ml-2"
+                >
+                  {`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
                 </a>
               ) : (
                 <span className="text-gray-500 ml-2">No disponible</span>

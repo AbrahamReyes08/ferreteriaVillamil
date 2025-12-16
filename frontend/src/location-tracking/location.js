@@ -7,7 +7,11 @@ export function connectSocket(serverUrl) {
   if (socket && socket.connected) 
     return socket;
 
-  socket = io(serverUrl);
+  const url = serverUrl || window.location.origin;
+  socket = io(url, {
+    transports: ['websocket', 'polling'],
+    timeout: 5000
+  });
 
   socket.on('connect', () => {
     console.log('Conectado al servidor de ubicación:', serverUrl);
@@ -56,10 +60,14 @@ export function startLocationTracking(serverUrl,  trackingInfo = {}, onLocationU
           ? { 
             pedido, 
             lat: locationData.latitude, 
-            lng: locationData.longitude }
+            lng: locationData.longitude,
+            accuracy: locationData.accuracy,
+            timestamp: locationData.timestamp }
           : { 
             lat: locationData.latitude, 
-            lng: locationData.longitude };
+            lng: locationData.longitude,
+            accuracy: locationData.accuracy,
+            timestamp: locationData.timestamp };
 
         socket.emit('location:update', payload);
       }

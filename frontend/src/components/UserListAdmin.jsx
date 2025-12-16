@@ -30,7 +30,7 @@ function UserListAdmin() {
     try {
       const response = await axios.get(
         `${
-          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
         }/usuarios/usuarios`
       );
 
@@ -58,7 +58,7 @@ function UserListAdmin() {
     try {
       await axios.delete(
         `${
-          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
         }/usuarios/usuarios/${usuario.id_usuario}`
       );
       message.success("Usuario eliminado exitosamente");
@@ -79,7 +79,7 @@ function UserListAdmin() {
       const nuevoEstado = usuario.estado === "Activo" ? "Inactivo" : "Activo";
       await axios.put(
         `${
-          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
         }/usuarios/usuarios/${usuario.id_usuario}`,
         {
           estado: nuevoEstado,

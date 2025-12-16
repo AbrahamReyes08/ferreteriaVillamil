@@ -42,7 +42,7 @@ function NuevoArticuloForm() {
 
       const response = await axios.post(
         `${
-          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
         }/articulos/new`,
         formToSend
       );
@@ -54,7 +54,7 @@ function NuevoArticuloForm() {
 
       await axios.put(
         `${
-          import.meta.env.VITE_SERVER_URL || "http://localhost:3000/api"
+          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
         }/articulos/edit/${response.data.data.codigo}`,
         { codigo: codigoFinal }
       );

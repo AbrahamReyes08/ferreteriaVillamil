@@ -32,7 +32,7 @@ export default function PedidoCardRepartidor() {
           return;
         }
         
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/${id}`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/pedidos/${id}`);
         
         if (response.data.status === 'success') {
           const pedidoData = response.data.data;
@@ -68,7 +68,7 @@ export default function PedidoCardRepartidor() {
     try {
       if (status === 'pendiente') {
         // Iniciar entrega - generar código de confirmación
-        const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/pedidos/${id}/generar-codigo`);
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/pedidos/${id}/generar-codigo`);
         
         if (response.data.status === 'success') {
           setStatus('en-curso');
@@ -78,7 +78,7 @@ export default function PedidoCardRepartidor() {
         // Confirmar entrega - validar código (necesitarías el código del cliente)
         const codigo = prompt('Ingrese el código de confirmación del cliente:');
         if (codigo) {
-          const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/pedidos/${id}/${codigo}/validar-codigo`);
+          const response = await axios.post(`${import.meta.env.VITE_API_URL}/pedidos/${id}/${codigo}/validar-codigo`);
           
           if (response.data.status === 'success') {
             navigate('/repartidor');
@@ -191,14 +191,14 @@ export default function PedidoCardRepartidor() {
               </div>
               <div className="flex">
                 <span className="font-medium w-32 text-gray-600">Enlace de Seguimiento:</span>
-                {pedido.link_seguimiento ? (
+                {pedido.numero_pedido ? (
                   <a 
-                    href={pedido.link_seguimiento} 
+                    href={`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
                     className="text-blue-600 hover:underline text-sm break-all"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {pedido.link_seguimiento}
+                    {`${import.meta.env.VITE_TRACKING_BASE_URL || window.location.origin}/cliente/tracking/${pedido.numero_pedido}`}
                   </a>
                 ) : (
                   <span className="text-gray-800 text-sm">N/A</span>

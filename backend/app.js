@@ -20,7 +20,14 @@ app.set("view engine", "jade");
 
 app.use(logger("dev"));
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'https://localhost:5173', 
+    'http://localhost:5173', 
+    'http://localhost:3000',
+    'https://grab-remarkable-clips-virgin.trycloudflare.com',
+    'https://paradise-corp-version-inch.trycloudflare.com',
+    /^https?:\/\/(?:localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):[0-9]+$/
+  ],
   credentials: true
 }));
 app.use(express.json());

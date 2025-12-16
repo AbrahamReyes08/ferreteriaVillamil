@@ -95,12 +95,12 @@ function DashboardAdmin() {
     const fetchDashboardData = async () => {
         try {
             const [calificacionesRes, pedidosRes, usuariosRes, detallesRes, articulosRes, lowStockRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/calificaciones/list`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/getAllPedidos`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/usuarios/usuarios`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/detalles/list`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/list`),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/articulos/low-stock`)
+                axios.get(`${import.meta.env.VITE_API_URL}/calificaciones/list`),
+                axios.get(`${import.meta.env.VITE_API_URL}/pedidos/getAllPedidos`),
+                axios.get(`${import.meta.env.VITE_API_URL}/usuarios/usuarios`),
+                axios.get(`${import.meta.env.VITE_API_URL}/detalles/list`),
+                axios.get(`${import.meta.env.VITE_API_URL}/articulos/list`),
+                axios.get(`${import.meta.env.VITE_API_URL}/articulos/low-stock`)
             ]);
 
             const lowStock = lowStockRes.data.data.map((a) => ({

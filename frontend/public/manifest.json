@@ -1,25 +1,61 @@
 {
-    "name": "tracker-app",
-    "short_name": "Rastreador",
-    "description": "Aplicación para rastrear la ubicación en tiempo real utilizando React y Socket.io",
+    "name": "Ferretería Villamil",
+    "short_name": "Villamil",
+    "description": "Sistema de pedidos y seguimiento de entregas",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#2196F3",
+    "theme_color": "#163269",
     "orientation": "portrait",
     "icons": [
         {
-            "src": "../src/assets/react.svg",
-            "sizes": "192x192",
-            "type": "image/png",
+            "src": "/vite.svg",
+            "sizes": "72x72",
+            "type": "image/svg+xml",
             "purpose": "any maskable"
         },
         {
-            "src": "../src/assets/react.svg",
+            "src": "/vite.svg",
+            "sizes": "96x96",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "128x128",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "144x144",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "152x152",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
+            "sizes": "384x384",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/vite.svg",
             "sizes": "512x512",
-            "type": "image/png",
+            "type": "image/svg+xml",
             "purpose": "any maskable"
         }
     ]
 }
-

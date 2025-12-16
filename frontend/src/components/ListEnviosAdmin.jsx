@@ -44,7 +44,7 @@ function ListEnviosAdmin() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/pedidos/getAllPedidos`
+        `${import.meta.env.VITE_API_URL || '/api'}/pedidos/getAllPedidos`
       );
 
       const enviosData = response.data.data || response.data;

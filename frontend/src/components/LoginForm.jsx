@@ -19,8 +19,8 @@ function LoginForm() {
     setLoading(true);
     
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/login`, {
-        usuario,
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || '/api'}/login`, {
+        usuario: usuario.trim(),
         contrasena
       });
       
@@ -82,6 +82,9 @@ function LoginForm() {
                 placeholder="Ingresa tu usuario"
                 className="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-900 focus:bg-white transition-colors"
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 onInvalid={(e) => e.target.setCustomValidity('Por favor ingresa tu usuario')}
                 onInput={(e) => e.target.setCustomValidity('')}
               />
@@ -99,6 +102,9 @@ function LoginForm() {
                 placeholder="Ingresa tu contraseña"
                 className="w-full px-4 py-3 bg-gray-200 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-900 focus:bg-white transition-colors"
                 required
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 onInvalid={(e) => e.target.setCustomValidity('Por favor ingresa tu contraseña')}
                 onInput={(e) => e.target.setCustomValidity('')}
               />

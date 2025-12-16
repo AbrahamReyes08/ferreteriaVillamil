@@ -9,7 +9,7 @@ const AsignarRepartidorModal = ({ isOpen, onClose, onAssign, repartidores = [], 
 
   const handleAssignRepartidor = async () => {
     try {
-      const response = await axios.post(`http://localhost:3000/api/pedidos/${pedidoId}/asignar-repartidor`, { id_repartidor: selectedRepartidor });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/pedidos/${pedidoId}/asignar-repartidor`, { id_repartidor: selectedRepartidor });
       onAssign(selectedRepartidor);
       setSelectedRepartidor('');
       message.success('Repartidor asignado correctamente');

@@ -1,5 +1,11 @@
 const { Pedido, Usuario, Detalle_Pedido, Articulo } = require("../models");
 
+// Función para generar enlace de tracking
+const generarEnlaceTracking = (pedidoId) => {
+  const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  return `${baseUrl}/cliente/tracking/${pedidoId}`;
+};
+
 const createNewPedido = async (request, response) => {
   try {
     if (!request.body || Object.keys(request.body).length === 0) {
@@ -32,6 +38,13 @@ const createNewPedido = async (request, response) => {
     };
 
     const newPedido = await Pedido.create(pedidoData);
+    
+    // Generar enlace de tracking
+    const trackingLink = generarEnlaceTracking(newPedido.id_pedido);
+    
+    // Actualizar el pedido con el enlace de tracking
+    await newPedido.update({ link_seguimiento: trackingLink });
+
     return response.status(201).json({
       status: "success",
       data: newPedido,

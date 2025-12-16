@@ -30,7 +30,7 @@ function PerfilRepartidor() {
       const usuario = JSON.parse(usuarioStorage);
       const repartidorId = usuario.id_usuario;
 
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/usuarios/usuarios/${repartidorId}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/usuarios/usuarios/${repartidorId}`);
       
       setNombre(response.data.nombre);
       setCorreo(response.data.correo);    
@@ -67,7 +67,7 @@ function PerfilRepartidor() {
         updateData.clave = clave;
       }
 
-      const response = await axios.put(`${import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api'}/usuarios/usuarios/${repartidorId}`, updateData);
+      const response = await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/usuarios/usuarios/${repartidorId}`, updateData);
       
       message.success('Usuario actualizado exitosamente');
       setIsEditing(false);

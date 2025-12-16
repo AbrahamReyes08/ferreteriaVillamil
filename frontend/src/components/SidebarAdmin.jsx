@@ -100,7 +100,7 @@ export function SidebarAdmin() {
         </div>
 
       {/*Menu */}
-      <nav className="flex-1 py-8">
+      <nav className="flex-1 min-h-0 py-8 overflow-y-auto">
         <Link
           to="/admin/dashboard"
           className={`flex items-center gap-3 px-6 py-4 mb-2 hover:bg-gray-50 transition-colors cursor-pointer ${
@@ -189,7 +189,7 @@ export function SidebarAdmin() {
         </nav>
 
         {/*User Profile*/}
-        <div className="p-6 bg-[#E6E6E6] border-t border-[#B8B8B8]">
+        <div className="p-6 bg-[#E6E6E6] border-t border-[#B8B8B8] shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-14 h-14 bg-[#B8B8B8] rounded-full flex items-center justify-center">

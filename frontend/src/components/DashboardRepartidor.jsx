@@ -35,7 +35,7 @@ export default function DashboardRepartidor() {
           return;
         }
 
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/pedidos/repartidor/${usuario.id_usuario}/pedidos`);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/pedidos/repartidor/${usuario.id_usuario}/pedidos`);
         
         if (response.data.status === 'success') {
           setPedidos(response.data.data);
@@ -178,7 +178,7 @@ export default function DashboardRepartidor() {
                     <div className="flex items-center gap-3">
                       <FaBox className="w-5 h-5 text-black flex-shrink-0" />
                       <span className="text-black text-xs sm:text-sm">
-                        Pedido #{pedido.id_pedido || pedido.id} • {formatDate(pedido.fecha_creacion)}
+                        Pedido #{pedido.numero_pedido} • {formatDate(pedido.fecha_creacion)}
                       </span>
                     </div>
                   </div>
@@ -228,7 +228,7 @@ export default function DashboardRepartidor() {
                     <div className="flex items-center gap-3">
                       <FaBox className="w-5 h-5 text-black flex-shrink-0" />
                       <span className="text-black text-xs sm:text-sm">
-                        Pedido #{pedido.id_pedido || pedido.id} • {formatDate(pedido.fecha_creacion)}
+                        Pedido #{pedido.numero_pedido} • {formatDate(pedido.fecha_creacion)}
                       </span>
                     </div>
                   </div>

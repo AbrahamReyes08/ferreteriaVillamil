@@ -4,7 +4,7 @@ import InfoRepartidorCliente from './InfoRepartidorCliente';
 
 // Crear instancia de axios sin autenticación para tracking público
 const publicAxios = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL || 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: {
     'Content-Type': 'application/json'
   }
