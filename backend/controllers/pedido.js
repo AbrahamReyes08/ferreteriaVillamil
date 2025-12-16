@@ -377,6 +377,57 @@ const getDetallesPedido = async (request, response) => {
   }
 };
 
+const getPedidoClienteTracking = async (request, response) => {
+  try {
+    const { id } = request.params;
+
+    const pedido = await Pedido.findOne({
+      where: { id_pedido: id },
+      include: [
+        {
+          model: Usuario,
+          foreignKey: 'id_admin_creador',
+          attributes: ['nombre', 'telefono'],
+        },
+        {
+          model: Usuario,
+          foreignKey: 'id_repartidor_asignado',
+          attributes: ['nombre', 'telefono'],
+          required: false
+        },
+        {
+          model: Detalle_Pedido,
+          include: [
+            {
+              model: Articulo,
+              attributes: ['id_articulo', 'nombre', 'descripcion', 'precio'],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!pedido) {
+      return response.status(404).json({
+        status: "Not Found",
+        message: "Pedido no encontrado",
+      });
+    }
+
+    return response.status(200).json({
+      status: "success",
+      data: pedido,
+    });
+  } catch (error) {
+    console.error("Error en getPedidoClienteTracking:", error);
+    return response.status(500).json({
+      status: "error",
+      message: "Internal server error",
+      error: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+};
+
 module.exports = {
   createNewPedido,
   getAllPedidos,
@@ -390,5 +441,6 @@ module.exports = {
   getPedidosActivosByRepartidor,
   asignarRepartidor,
   cancelarEnvio,
-  updateEstadoPedido
+  updateEstadoPedido,
+  getPedidoClienteTracking
 };
