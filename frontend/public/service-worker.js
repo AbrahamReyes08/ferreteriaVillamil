@@ -38,8 +38,15 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Estrategia de cache: Network first, fallback to cache
 self.addEventListener('fetch', (event) => {
+  // No hay que cachear peticiones POST, PUT, DELETE ni peticiones a APIs
+  if (event.request.method !== 'GET' || 
+      event.request.url.includes('/api/') ||
+      event.request.url.includes('google-analytics.com')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
@@ -60,7 +67,7 @@ self.addEventListener('fetch', (event) => {
             if (response) {
               return response;
             }
-        });
+          });
       })
   );
 });

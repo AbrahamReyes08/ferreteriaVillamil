@@ -19,15 +19,27 @@ app.set("views", path.join(__dirname, "..", "views"));
 app.set("view engine", "jade");
 
 app.use(logger("dev"));
-app.use(cors({
-  origin: [
+// Obtener URLs permitidas desde variables de entorno
+const getOrigins = () => {
+  const origins = [
     'https://localhost:5173', 
     'http://localhost:5173', 
-    'http://localhost:3000',
-    'https://grab-remarkable-clips-virgin.trycloudflare.com',
-    'https://paradise-corp-version-inch.trycloudflare.com',
-    /^https?:\/\/(?:localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):[0-9]+$/
-  ],
+    'http://localhost:3000'
+  ];
+  
+  if (process.env.FRONTEND_URL) {
+    origins.push(process.env.FRONTEND_URL);
+  }
+  origins.push(/^https?:\/\/(?:localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+):[0-9]+$/);
+  
+  // Agregar cualquier dominio de Cloudflare Tunnel
+  origins.push(/^https:\/\/.*\.trycloudflare\.com$/);
+  
+  return origins;
+};
+
+app.use(cors({
+  origin: getOrigins(),
   credentials: true
 }));
 app.use(express.json());
@@ -41,6 +53,9 @@ app.use("/api/pedidos", authMiddleware, pedidoRouter);
 app.use("/api/calificaciones", authMiddleware, calificacionRouter);
 app.use("/api/estadisticas", authMiddleware, estadisticasRouter);
 app.use("/api/detalles", authMiddleware, detallesRouter);
+
+// Ruta pública para tracking de pedidos (sin autenticación)
+app.use("/cliente/tracking", pedidoRouter);
 
 // Login endpoint (no necesita autenticación)
 app.post("/api/login", usuarioController.loginUsuario);

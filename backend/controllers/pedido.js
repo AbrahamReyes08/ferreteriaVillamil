@@ -395,7 +395,7 @@ const getPedidoClienteTracking = async (request, response) => {
     const { id } = request.params;
 
     const pedido = await Pedido.findOne({
-      where: { id_pedido: id },
+      where: { numero_pedido: id },
       include: [
         {
           model: Usuario,
