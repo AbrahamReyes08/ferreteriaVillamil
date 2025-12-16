@@ -3,18 +3,19 @@ import { Avatar, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function NuevoArticuloForm() {
+function NuevoArticuloForm({articulo = null}) {
   const [form, setForm] = useState({
-    codigo: "",
-    nombre: "",
-    descripcion: "",
-    costo_unitario: "",
-    precio: "",
-    cantidad_existencia: "",
-    stock_minimo: "",
-    proveedor: "",
+    codigo: articulo?.codigo || "",
+    nombre: articulo?.nombre || "",
+    descripcion: articulo?.descripcion || "",
+    costo_unitario: articulo?.costo_unitario || "",
+    precio: articulo?.precio || "",
+    cantidad_existencia: articulo?.cantidad_existencia || "",
+    stock_minimo: articulo?.stock_minimo || "",
+    proveedor: articulo?.proveedor || "",
     estado: "Disponible",
   });
+  const isEditMode = Boolean(articulo);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -33,44 +34,52 @@ function NuevoArticuloForm() {
     setLoading(true);
 
     try {
-      const nombreSinEspacios = form.nombre.replace(/\s/g, '');
-      const codigoProvisional = nombreSinEspacios.substring(0, 4).toUpperCase();
+      if (isEditMode) {
+        await axios.put(
+          `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/articulos/edit/${articulo.id_articulo}`,
+          form
+        );
 
-      
-      const formToSend = { ...form, codigo: codigoProvisional };
-      console.log(formToSend);
+        message.success("Artículo actualizado correctamente");
+      } else {
+        const nombreSinEspacios = form.nombre.replace(/\s/g, '');
+        const codigoProvisional = nombreSinEspacios.substring(0, 4).toUpperCase();
 
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-        }/articulos/new`,
-        formToSend
-      );
-      console.log(response.data.data)
-      const idGenerado = response.data.data.id_articulo;
-      const idFormateado = String(idGenerado).padStart(3, "0");
-      const codigoFinal = `${codigoProvisional}${idFormateado}`;
-      console.log(idGenerado, idFormateado, codigoFinal);
+        
+        const formToSend = { ...form, codigo: codigoProvisional };
+        console.log(formToSend);
 
-      await axios.put(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-        }/articulos/edit/${response.data.data.codigo}`,
-        { codigo: codigoFinal }
-      );
+        const response = await axios.post(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+          }/articulos/new`,
+          formToSend
+        );
+        console.log(response.data.data)
+        const idGenerado = response.data.data.id_articulo;
+        const idFormateado = String(idGenerado).padStart(3, "0");
+        const codigoFinal = `${codigoProvisional}${idFormateado}`;
+        console.log(idGenerado, idFormateado, codigoFinal);
 
-      message.success("Artículo creado exitosamente");
+        await axios.put(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+          }/articulos/edit/${response.data.data.codigo}`,
+          { codigo: codigoFinal }
+        );
 
+        message.success("Artículo creado exitosamente");
+      }
       setForm({
-        codigo: "",
-        nombre: "",
-        descripcion: "",
-        costo_unitario: "",
-        precio: "",
-        cantidad_existencia: "",
-        stock_minimo: "",
-        proveedor: "",
-      });
+          codigo: "",
+          nombre: "",
+          descripcion: "",
+          costo_unitario: "",
+          precio: "",
+          cantidad_existencia: "",
+          stock_minimo: "",
+          proveedor: "",
+        });
       setLoading(false);
       navigate("/admin/inventario");
     } catch (err) {
