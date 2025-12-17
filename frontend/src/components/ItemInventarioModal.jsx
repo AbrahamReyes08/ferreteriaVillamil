@@ -20,7 +20,7 @@ function ModalEditarCantidad({
 
         onGuardar({
             codigo: articulo.codigo,
-            cantidad_existencia: Number(articulo.cantidad_existencia) + Number(cantidad),
+            cantidad_existencia: Number(articulo?.cantidad_existencia) + Number(cantidad),
         });
 
         onClose();
