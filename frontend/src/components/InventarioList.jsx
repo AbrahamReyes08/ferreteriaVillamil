@@ -198,6 +198,9 @@ function InventarioList() {
                                     <button
                                     className="p-1 hover:bg-gray-200 rounded-md transition-colors"
                                     title="Editar"
+                                    onClick={() =>
+                                        navigate(`/admin/inventario/editar-articulo/${item.codigo}`)
+                                        }
                                     >
                                     <EditOutlined className="w-5 h-5 text-black" />
                                     </button>

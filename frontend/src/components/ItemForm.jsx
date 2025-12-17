@@ -1,23 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, message } from "antd";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-function NuevoArticuloForm({articulo = null}) {
+function NuevoArticuloForm() {
   const [form, setForm] = useState({
-    codigo: articulo?.codigo || "",
-    nombre: articulo?.nombre || "",
-    descripcion: articulo?.descripcion || "",
-    costo_unitario: articulo?.costo_unitario || "",
-    precio: articulo?.precio || "",
-    cantidad_existencia: articulo?.cantidad_existencia || "",
-    stock_minimo: articulo?.stock_minimo || "",
-    proveedor: articulo?.proveedor || "",
+    codigo: "",
+    nombre: "",
+    descripcion: "",
+    costo_unitario: "",
+    precio: "",
+    cantidad_existencia: "",
+    stock_minimo: "",
+    proveedor: "",
     estado: "Disponible",
   });
-  const isEditMode = Boolean(articulo);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {codigo} = useParams();
+  const isEditMode = Boolean(codigo);
+
+  useEffect(() => {
+    if (codigo) {
+      axios.get(`${import.meta.env.VITE_API_URL}/articulos/code/${codigo}`).then(res => {
+        setForm(res.data.data);
+      });
+    }
+  }, [codigo]);
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
@@ -36,7 +45,7 @@ function NuevoArticuloForm({articulo = null}) {
     try {
       if (isEditMode) {
         await axios.put(
-          `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/articulos/edit/${articulo.id_articulo}`,
+          `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/articulos/edit/${codigo}`,
           form
         );
 
