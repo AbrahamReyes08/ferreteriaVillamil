@@ -1,4 +1,4 @@
-const {Articulo} = require('../models');
+const {Articulo, Detalle_Pedido, sequelize} = require('../models');
 const { Op, Sequelize } = require("sequelize");
 
 function checkForNull(data, res){
@@ -171,34 +171,49 @@ const getItemByID = async (request, response) => {
 }
 
 const deleteItem = async (request, response) => {
+    const transaction = await sequelize.transaction();
+
     try {
-        const data = request.params.codigo;
+        const { codigo } = request.params;
 
         const item = await Articulo.findOne({
-            where: { codigo: data}
+            where: { codigo },
+            transaction
         });
 
-        if(!item){
+        if (!item) {
+            await transaction.rollback();
             return response.status(404).json({
                 status: "Not Found",
                 message: "Requested code does not exist"
             });
         }
 
-        await item.destroy();
+        await Detalle_Pedido.destroy({
+            where: { id_articulo: item.id_articulo },
+            transaction
+        });
+
+
+        await item.destroy({ transaction });
+
+        // 3️⃣ confirmar
+        await transaction.commit();
 
         return response.status(200).json({
             status: "Success",
-            message: "Item deleted successfully"
+            message: "Item and related details deleted successfully"
         });
 
     } catch (error) {
+        await transaction.rollback();
         return response.status(500).json({
-            status:"Error",
+            status: "Error",
             message: error.message
-        })
+        });
     }
-}
+};
+
 
 module.exports = {
     nuevoArticulo,

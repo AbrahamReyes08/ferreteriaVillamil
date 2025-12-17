@@ -9,18 +9,18 @@ function ModalEditarCantidad({
 }) {
     const [cantidad, setCantidad] = useState(0);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (articulo?.cantidad_existencia !== undefined) {
             setCantidad(articulo.cantidad_existencia);
         }
-    }, [articulo]);
+    }, [articulo]);*/
 
     const handleGuardar = () => {
         if (!articulo) return;
 
         onGuardar({
             codigo: articulo.codigo,
-            cantidad_existencia: Number(cantidad),
+            cantidad_existencia: Number(articulo.cantidad_existencia) + Number(cantidad),
         });
 
         onClose();
