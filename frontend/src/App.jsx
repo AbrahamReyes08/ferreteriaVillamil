@@ -43,6 +43,7 @@ function App() {
           <Route path="usuarios/editar/:id" element={<EditarUsuario />} />
           <Route path="usuarios" element={<UserListAdmin />} />
           <Route path="inventario/crear-articulo" element={<NuevoArticuloForm />} />
+          <Route path="inventario/editar-articulo/:codigo" element={<NuevoArticuloForm />} />
           <Route path="inventario" element={<InventarioList />} />
           <Route path="pedidos" element={<ListaPedidosAdmin />} />
           <Route path="pedidos/crear-pedido" element={<NuevoPedidoForm />} />

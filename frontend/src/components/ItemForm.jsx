@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Avatar, message } from "antd";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 function NuevoArticuloForm() {
   const [form, setForm] = useState({
@@ -17,6 +17,16 @@ function NuevoArticuloForm() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {codigo} = useParams();
+  const isEditMode = Boolean(codigo);
+
+  useEffect(() => {
+    if (codigo) {
+      axios.get(`${import.meta.env.VITE_API_URL}/articulos/code/${codigo}`).then(res => {
+        setForm(res.data.data);
+      });
+    }
+  }, [codigo]);
 
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value });
@@ -33,44 +43,52 @@ function NuevoArticuloForm() {
     setLoading(true);
 
     try {
-      const nombreSinEspacios = form.nombre.replace(/\s/g, '');
-      const codigoProvisional = nombreSinEspacios.substring(0, 4).toUpperCase();
+      if (isEditMode) {
+        await axios.put(
+          `${import.meta.env.VITE_API_URL || "http://localhost:3000/api"}/articulos/edit/${codigo}`,
+          form
+        );
 
-      
-      const formToSend = { ...form, codigo: codigoProvisional };
-      console.log(formToSend);
+        message.success("Artículo actualizado correctamente");
+      } else {
+        const nombreSinEspacios = form.nombre.replace(/\s/g, '');
+        const codigoProvisional = nombreSinEspacios.substring(0, 4).toUpperCase();
 
-      const response = await axios.post(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-        }/articulos/new`,
-        formToSend
-      );
-      console.log(response.data.data)
-      const idGenerado = response.data.data.id_articulo;
-      const idFormateado = String(idGenerado).padStart(3, "0");
-      const codigoFinal = `${codigoProvisional}${idFormateado}`;
-      console.log(idGenerado, idFormateado, codigoFinal);
+        
+        const formToSend = { ...form, codigo: codigoProvisional };
+        console.log(formToSend);
 
-      await axios.put(
-        `${
-          import.meta.env.VITE_API_URL || "http://localhost:3000/api"
-        }/articulos/edit/${response.data.data.codigo}`,
-        { codigo: codigoFinal }
-      );
+        const response = await axios.post(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+          }/articulos/new`,
+          formToSend
+        );
+        console.log(response.data.data)
+        const idGenerado = response.data.data.id_articulo;
+        const idFormateado = String(idGenerado).padStart(3, "0");
+        const codigoFinal = `${codigoProvisional}${idFormateado}`;
+        console.log(idGenerado, idFormateado, codigoFinal);
 
-      message.success("Artículo creado exitosamente");
+        await axios.put(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:3000/api"
+          }/articulos/edit/${response.data.data.codigo}`,
+          { codigo: codigoFinal }
+        );
 
+        message.success("Artículo creado exitosamente");
+      }
       setForm({
-        codigo: "",
-        nombre: "",
-        descripcion: "",
-        costo_unitario: "",
-        precio: "",
-        cantidad_existencia: "",
-        stock_minimo: "",
-        proveedor: "",
-      });
+          codigo: "",
+          nombre: "",
+          descripcion: "",
+          costo_unitario: "",
+          precio: "",
+          cantidad_existencia: "",
+          stock_minimo: "",
+          proveedor: "",
+        });
       setLoading(false);
       navigate("/admin/inventario");
     } catch (err) {
@@ -90,11 +108,11 @@ function NuevoArticuloForm() {
       <div className="max-w-5xl">
         {/* Header (page) */}
         <div className="flex items-center justify-between mb-5">
-          <h1
+          <h1 
             className="text-3xl font-bold pb-4 border-b-4 flex-1"
             style={{ color: "#163269", borderColor: "#163269" }}
           >
-            Nuevo Articulo
+          {isEditMode ? "Editar Artículo" : "Nuevo Artículo"}
           </h1>
         </div>
 
@@ -323,7 +341,9 @@ function NuevoArticuloForm() {
               color: "white",
             }}
           >
-            {loading ? "Agregando..." : "Agregar"}
+            {loading
+              ? isEditMode ? "Actualizando..." : "Agregando..."
+              : isEditMode ? "Actualizar" : "Agregar"}
           </button>
         </div>
       </div>

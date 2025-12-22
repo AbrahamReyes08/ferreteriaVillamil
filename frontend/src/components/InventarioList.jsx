@@ -198,6 +198,9 @@ function InventarioList() {
                                     <button
                                     className="p-1 hover:bg-gray-200 rounded-md transition-colors"
                                     title="Editar"
+                                    onClick={() =>
+                                        navigate(`/admin/inventario/editar-articulo/${item.codigo}`)
+                                        }
                                     >
                                     <EditOutlined className="w-5 h-5 text-black" />
                                     </button>
@@ -235,10 +238,15 @@ function InventarioList() {
                 onClose={() => setModalEstadoOpen(false)}
                 articulo={articuloSel}
                 onGuardar={async (articuloActualizado) => {
-                    await axios.put(
-                        `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
-                        { estado: articuloActualizado.estado}
-                    );
+                    try{
+                        await axios.put(
+                            `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
+                            { estado: articuloActualizado.estado}
+                        );
+                        message.success("Articulo editado con éxito");
+                    } catch(error){
+                        message.error("Error inesperado al editar artículo");
+                    }
                     fetchArticulos();
                 }}
             />
@@ -247,10 +255,15 @@ function InventarioList() {
                 onClose={() => setModalCantidadOpen(false)}
                 articulo={articuloSel}
                 onGuardar={async (articuloActualizado) => {
-                    await axios.put(
-                        `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
-                        { cantidad_existencia: articuloActualizado.cantidad_existencia}
-                    );
+                    try {    
+                        await axios.put(
+                            `${baseUrl}/articulos/edit/${articuloActualizado.codigo}`,
+                            { cantidad_existencia: articuloActualizado.cantidad_existencia}
+                        );
+                        message.success("Articulo editado con éxito");
+                    } catch(error){
+                        message.error("Error inesperado al editar artículo");
+                    }
                     fetchArticulos();
                 }}
             />
@@ -259,9 +272,14 @@ function InventarioList() {
                 onClose={() => setModalEliminarOpen(false)}
                 articulo={articuloSel}
                 onConfirm={async (articulo) => {
-                    await axios.delete(
-                        `${baseUrl}/articulos/delete/${articulo.codigo}`
-                    );
+                    try {
+                        await axios.delete(
+                            `${baseUrl}/articulos/delete/${articulo.codigo}`
+                        );
+                        message.success("Articulo borrado con éxito");
+                    } catch(error){
+                        message.error("Error inesperado al borrar artículo");
+                    }
                     fetchArticulos();
                 }}
             />
